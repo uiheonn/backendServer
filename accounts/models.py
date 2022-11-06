@@ -64,14 +64,15 @@ class User(AbstractBaseUser, PermissionsMixin):
     objects = UserManager()
 
     EMAIL_FIELD = 'email'
-    USERNAME_FIELD = 'email'
+    #USERNAME_FIELD = 'email'
+    NICKNAME_FIELD = 'nickName'
 
     class Meta:
         verbose_name = _('user')
         verbose_name_plural = _('users')
 
     def __str__(self):
-        return self.nickName 
+        return self.nickName
 
     def get_short_name(self):
         return self.email
