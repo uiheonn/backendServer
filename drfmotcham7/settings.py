@@ -26,7 +26,7 @@ SECRET_KEY = 'django-insecure-clgd+r!(nh9_mb(j3y-8d!_dvt-qd_!4f=sibiupp#pk+h0$x9
 DEBUG = True
 
 ALLOWED_HOSTS = ['motchamjing4.herokuapp.com']
-#ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = ['*']
 
 # Application definition
 
@@ -126,3 +126,26 @@ STATIC_URL = '/static/'
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+REST_FRAMEWORK = {
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
+    'PAGE_SIZE': 10,
+    'DEFAULT_PERMISSION_CLASSES': (
+        'rest_framework.permissions.IsAuthenticated',
+    ),
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        #'rest_framework_jwt.authentication.JSONWebTokenAuthentication',
+        'rest_framework.authentication.SessionAuthentication',
+        'rest_framework.authentication.BasicAuthentication',
+    ],
+    'DEFAULT_RENDERER_CLASSES': [
+        'rest_framework.renderers.JSONRenderer',
+    ],
+    'DEFAULT_PARSER_CLASSES': [
+        'rest_framework.parsers.JSONParser',
+        'rest_framework.parsers.FormParser',
+        'rest_framework.parsers.MultiPartParser'
+    ]
+}
+
+AUTH_USER_MODEL = 'accounts.User'
