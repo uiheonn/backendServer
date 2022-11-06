@@ -43,7 +43,7 @@ class User(AbstractBaseUser, PermissionsMixin):
         unique=True,
         help_text='EMAIL ID.'
     )
-    username = models.CharField(
+    nickName = models.CharField(
         max_length=30,
     )
     is_staff = models.BooleanField(
@@ -71,7 +71,7 @@ class User(AbstractBaseUser, PermissionsMixin):
         verbose_name_plural = _('users')
 
     def __str__(self):
-        return self.username
+        return self.nickName 
 
     def get_short_name(self):
         return self.email
