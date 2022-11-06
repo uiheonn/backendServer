@@ -26,7 +26,7 @@ SECRET_KEY = 'django-insecure-clgd+r!(nh9_mb(j3y-8d!_dvt-qd_!4f=sibiupp#pk+h0$x9
 DEBUG = True
 
 ALLOWED_HOSTS = ['motchamjing4.herokuapp.com']
-ALLOWED_HOSTS = ['*']
+#ALLOWED_HOSTS = ['*']
 
 # Application definition
 
