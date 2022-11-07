@@ -64,7 +64,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     objects = UserManager()
 
     EMAIL_FIELD = 'email'
-    #USERNAME_FIELD = 'email'
+    USERNAME_FIELD = 'email'
     NICKNAME_FIELD = 'nickName'
 
     class Meta:
