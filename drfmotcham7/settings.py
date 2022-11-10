@@ -25,6 +25,10 @@ SECRET_KEY = 'django-insecure-clgd+r!(nh9_mb(j3y-8d!_dvt-qd_!4f=sibiupp#pk+h0$x9
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
+# CORS 관련 추가
+CORS_ORIGIN_WHITELIST = ['http://127.0.0.1:8000', 'https://motchamjing4.herokuapp.com']
+CORS_ALLOW_CREDENTIALS = True
+
 ALLOWED_HOSTS = ['motchamjing4.herokuapp.com']
 #ALLOWED_HOSTS = ['*']
 
@@ -40,10 +44,15 @@ INSTALLED_APPS = [
     'rest_framework',
     'accounts',
     #'admin',
+    #'X-CSRFToken',
+    #'csrftoken',
+    #'x-requested-with',
+    'corsheaders', # CORS 관련 추가
 ]
 
 
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',     # CORS 관련 추가
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -51,6 +60,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    
 ]
 
 ROOT_URLCONF = 'drfmotcham7.urls'
@@ -154,3 +164,8 @@ REST_FRAMEWORK = {
 
 AUTH_USER_MODEL = 'accounts.User'
 
+CSRF_COOKIE_HTTPONLY = True
+
+SESSION_COOKIE_HTTPONLY = False
+
+CSRF_USE_SESSIONS = False
