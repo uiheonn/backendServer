@@ -42,12 +42,16 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
+    'rest_framework.authtoken',
     'accounts',
     #'admin',
     #'X-CSRFToken',
     #'csrftoken',
     #'x-requested-with',
     'corsheaders', # CORS 관련 추가
+    'boards',
+    'piano',
+    
 ]
 
 
@@ -151,6 +155,7 @@ REST_FRAMEWORK = {
         #'rest_framework_jwt.authentication.JSONWebTokenAuthentication',
         'rest_framework.authentication.SessionAuthentication',
         'rest_framework.authentication.BasicAuthentication',
+        'rest_framework.authentication.TokenAuthentication',
     ],
     'DEFAULT_RENDERER_CLASSES': [
         'rest_framework.renderers.JSONRenderer',
@@ -169,3 +174,5 @@ CSRF_COOKIE_HTTPONLY = True
 SESSION_COOKIE_HTTPONLY = False
 
 CSRF_USE_SESSIONS = False
+
+#APPEND_SLASH=False

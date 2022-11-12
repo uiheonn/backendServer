@@ -5,6 +5,9 @@ from rest_framework.permissions import AllowAny
 from .serializers import UserLoginSerializer
 from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
+from rest_framework.authtoken.models import Token
+from django.contrib.auth import authenticate
+
 
 from .serializers import UserCreateSerializer
 from .models import User
@@ -14,16 +17,22 @@ from .models import User
 @permission_classes([AllowAny])
 @method_decorator(csrf_exempt)
 def createUser(request):
-    
-
     if request.method == 'POST':
         serializer = UserCreateSerializer(data=request.data)
+        #user = authenticate(UserCreateSerializer.password)
+        #user = UserCreateSerializer.user
+        #token, _ = Token.objects.get_or_create(user=user)
+
         if not serializer.is_valid(raise_exception=True):
             return Response({"message": "Request Body Error."}, status=status.HTTP_409_CONFLICT)
-
         if User.objects.filter(email=serializer.validated_data['email']).first() is None:
             serializer.save()
-            return Response({"message": "ok"}, status=status.HTTP_201_CREATED)
+            #token = Token.objects.create(user=user) # 유저가 있으면 가져오고, 없으면 토큰을 생성한다.
+            return Response({
+                            "message": "ok",
+                            #"Token": token.key
+                            }, 
+                            status=status.HTTP_201_CREATED)
         return Response({"message": "duplicate email"}, status=status.HTTP_409_CONFLICT)
 
 
@@ -33,14 +42,15 @@ def createUser(request):
 def login(request):
     if request.method == 'POST':
         serializer = UserLoginSerializer(data=request.data)
-
         if not serializer.is_valid(raise_exception=True):
             return Response({"message": "Request Body Error."}, status=status.HTTP_409_CONFLICT)
         if serializer.validated_data['email'] == "None":
             return Response({'message': 'fail'}, status=status.HTTP_200_OK)
 
+        #token = Token.objects.create()
         response = {
             'success': 'True',
-            #'token': serializer.data['token']
+            'token':serializer.data['token']
         }
         return Response(response, status=status.HTTP_200_OK)
+
