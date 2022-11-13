@@ -176,3 +176,28 @@ SESSION_COOKIE_HTTPONLY = False
 CSRF_USE_SESSIONS = False
 
 #APPEND_SLASH=False
+
+CORS_ALLOW_HEADERS = (
+    'access-control-allow-credentials',
+    'access-control-allow-origin',
+    'access-control-request-method',
+    'access-control-request-headers',
+    'accept',
+    'accept-encoding',
+    'accept-language',
+    'authorization',
+    'connection',
+    'content-type',
+    'dnt',
+    'credentials',
+    'host',
+    'origin',
+    'user-agent',
+    'X-CSRFToken',
+    'csrftoken',
+    'x-requested-with',
+)
+
+CSRF_COKKIE_NAME="csrftoken"
+
+CSRF_HEADER_NAME="X-CSRFToken"
