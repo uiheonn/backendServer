@@ -30,7 +30,7 @@ CORS_ORIGIN_WHITELIST = ['http://127.0.0.1:8000', 'https://motchamjing4.herokuap
 CORS_ALLOW_CREDENTIALS = True
 
 ALLOWED_HOSTS = ['motchamjing4.herokuapp.com']
-#ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = ['*']
 
 # Application definition
 
@@ -198,12 +198,12 @@ CORS_ALLOW_HEADERS = (
     'x-requested-with',
 )
 
-#CSRF_COKKIE_NAME="csrftoken"
+CSRF_COKKIE_NAME="csrftoken"
 
-#CSRF_HEADER_NAME="X-CSRFToken"
+CSRF_HEADER_NAME="X-CSRFToken"
 
-CSRF_COOKIE_NAME = 'XSRF-TOKEN'
-CSRF_HEADER_NAME = 'X-XSRF-TOKEN'
+#CSRF_COOKIE_NAME = 'XSRF-TOKEN'
+#CSRF_HEADER_NAME = 'X-XSRF-TOKEN'
 
 CORS_ORIGIN_ALLOW_ALL = True
 
