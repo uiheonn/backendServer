@@ -4,7 +4,7 @@ from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import AllowAny
 from .serializers import UserLoginSerializer
 from django.utils.decorators import method_decorator
-from django.views.decorators.csrf import csrf_exempt
+from django.views.decorators.csrf import csrf_exempt, ensure_csrf_cookie
 from rest_framework.authtoken.models import Token
 from django.contrib.auth import authenticate
 
@@ -16,6 +16,7 @@ from .models import User
 @api_view(['POST'])
 @permission_classes([AllowAny])
 @method_decorator(csrf_exempt)
+@method_decorator(ensure_csrf_cookie)
 def createUser(request):
     if request.method == 'POST':
         serializer = UserCreateSerializer(data=request.data)
@@ -39,6 +40,7 @@ def createUser(request):
 @api_view(['POST'])
 @permission_classes([AllowAny])
 @method_decorator(csrf_exempt)
+@method_decorator(ensure_csrf_cookie)
 def login(request):
     if request.method == 'POST':
         serializer = UserLoginSerializer(data=request.data)
