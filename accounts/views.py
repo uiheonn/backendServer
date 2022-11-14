@@ -8,16 +8,17 @@ from django.views.decorators.csrf import ensure_csrf_cookie
 from django.views.decorators.csrf import csrf_exempt
 from rest_framework.authtoken.models import Token
 from django.contrib.auth import authenticate
-
+from django.http import HttpResponse,JsonResponse
 
 from .serializers import UserCreateSerializer
 from .models import User
+#from django.shortcuts import render
 
 
 @api_view(['POST'])
 @permission_classes([AllowAny])
 @method_decorator(csrf_exempt)
-#@method_decorator(ensure_csrf_cookie, name="get")
+@ensure_csrf_cookie
 def createUser(request):
     if request.method == 'POST':
         serializer = UserCreateSerializer(data=request.data)
@@ -41,7 +42,7 @@ def createUser(request):
 @api_view(['POST'])
 @permission_classes([AllowAny])
 @method_decorator(csrf_exempt)
-#@method_decorator(ensure_csrf_cookie, name="get")
+@ensure_csrf_cookie
 def login(request):
     if request.method == 'POST':
         serializer = UserLoginSerializer(data=request.data)
@@ -49,11 +50,19 @@ def login(request):
             return Response({"message": "Request Body Error."}, status=status.HTTP_409_CONFLICT)
         if serializer.validated_data['email'] == "None":
             return Response({'message': 'fail'}, status=status.HTTP_200_OK)
-
+        token = serializer.data['token']
         #token = Token.objects.create()
         response = {
             'success': 'True',
-            'token':serializer.data['token']
+            'token':serializer.data['token'],
+            
         }
-        return Response(response, status=status.HTTP_200_OK)
+        #res = render(request, 'users/logins')
+        res = HttpResponse({'success':True})
+        res.set_cookie('accesstoken',token)
+        #HttpResponse.set_cookie('acdsdftoken',token)
 
+        #response.set_cookie('csrf',serializer.data['token'])
+        return Response(response, status=status.HTTP_200_OK)
+        #return res
+        
