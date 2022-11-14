@@ -5,7 +5,7 @@ from rest_framework.response import Response
 
 from .serializers import BoardSerializer
 from .models import Board
-
+'''
 class BoardViewSet(viewsets.ModelViewSet):
     queryset = Board.objects.all()
     serializer_class = BoardSerializer
@@ -13,6 +13,15 @@ class BoardViewSet(viewsets.ModelViewSet):
     permission_classes = [permissions.IsAuthenticated]
     if permission_classes==False:
         Response({"message": "로그인된 사용자가 아닙니다"}, status=status.HTTP_409_CONFLICT)
+
+    def perform_create(self, serializer):
+        serializer.save(author=self.request.user)
+'''
+
+class BoardViewSet(viewsets.ModelViewSet):
+    queryset = Board.objects.all()
+    serializer_class = BoardSerializer
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
 
     def perform_create(self, serializer):
         serializer.save(author=self.request.user)
