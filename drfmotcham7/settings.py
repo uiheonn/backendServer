@@ -26,7 +26,7 @@ SECRET_KEY = 'django-insecure-clgd+r!(nh9_mb(j3y-8d!_dvt-qd_!4f=sibiupp#pk+h0$x9
 DEBUG = True
 
 # CORS 관련 추가
-CORS_ORIGIN_WHITELIST = ['http://127.0.0.1:8000', 'https://motchamjing4.herokuapp.com']
+CORS_ORIGIN_WHITELIST = ['http://127.0.0.1:8000', 'https://motchamjing4.herokuapp.com','*']
 #CORS_ORIGIN_WHITELIST = ['*']
 CORS_ALLOW_CREDENTIALS = True
 
@@ -156,7 +156,7 @@ REST_FRAMEWORK = {
         #'rest_framework_jwt.authentication.JSONWebTokenAuthentication',
         'rest_framework.authentication.SessionAuthentication',
         'rest_framework.authentication.BasicAuthentication',
-        #'rest_framework.authentication.TokenAuthentication',
+        'rest_framework.authentication.TokenAuthentication',
     ],
     'DEFAULT_RENDERER_CLASSES': [
         'rest_framework.renderers.JSONRenderer',
