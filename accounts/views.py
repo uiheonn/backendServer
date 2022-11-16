@@ -34,7 +34,7 @@ def createUser(request):
             return Response({
                             "message": "ok",
                             #"Token": token.key
-                            }, 
+                            },
                             status=status.HTTP_201_CREATED)
         return Response({"message": "duplicate email"}, status=status.HTTP_409_CONFLICT)
 
