@@ -26,8 +26,11 @@ SECRET_KEY = 'django-insecure-clgd+r!(nh9_mb(j3y-8d!_dvt-qd_!4f=sibiupp#pk+h0$x9
 DEBUG = True
 
 # CORS 관련 추가
-CORS_ORIGIN_WHITELIST = ['http://127.0.0.1:8000', 'https://motchamjing4.herokuapp.com','*']
-#CORS_ORIGIN_WHITELIST = ['*']
+CORS_ORIGIN_WHITELIST = [
+    'http://127.0.0.1:8000', 
+    'https://motchamjing4.herokuapp.com',
+    '*'
+    ]
 CORS_ALLOW_CREDENTIALS = True
 
 ALLOWED_HOSTS = ['motchamjing4.herokuapp.com']
@@ -45,14 +48,10 @@ INSTALLED_APPS = [
     'rest_framework',
     'rest_framework.authtoken',
     'accounts',
-    #'admin',
-    #'X-CSRFToken',
-    #'csrftoken',
-    #'x-requested-with',
     'corsheaders', # CORS 관련 추가
     'boards',
     'piano',
-    
+    #'admin',
 ]
 
 
@@ -154,7 +153,7 @@ REST_FRAMEWORK = {
     ),
     'DEFAULT_AUTHENTICATION_CLASSES': [
         #'rest_framework_jwt.authentication.JSONWebTokenAuthentication',
-        'rest_framework.authentication.SessionAuthentication',
+        #'rest_framework.authentication.SessionAuthentication',
         'rest_framework.authentication.BasicAuthentication',
         'rest_framework.authentication.TokenAuthentication',
     ],
@@ -191,27 +190,19 @@ CORS_ALLOW_HEADERS = (
     'host',
     'origin',
     'user-agent',
-    'X-CSRFToken',
-    'csrftoken',
-    'x-requested-with',
+    #'X-CSRFToken',
+    #'csrftoken',
+    #'x-requested-with',
 
 )
-
+'''
 CSRF_COOKIE_HTTPONLY = False
-
-#SESSION_COOKIE_HTTPONLY = False
 
 CSRF_USE_SESSIONS = False
 
 SESSION_COOKIE_HTTPONLY = True
 
-#APPEND_SLASH=False
-
 CSRF_COOKIE_NAME = 'csrftoken'
 
 CSRF_HEADER_NAME = 'X-CSRFToken'
-
-#CSRF_COOKIE_NAME = 'XSRF-TOKEN'
-#CSRF_HEADER_NAME = 'X-XSRF-TOKEN'
-
-CSRF_TRUSTED_ORIGINS = ["*"]
+'''

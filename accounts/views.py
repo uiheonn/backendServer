@@ -4,11 +4,11 @@ from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import AllowAny
 from .serializers import UserLoginSerializer
 from django.utils.decorators import method_decorator
-from django.views.decorators.csrf import ensure_csrf_cookie
+#from django.views.decorators.csrf import ensure_csrf_cookie
 from django.views.decorators.csrf import csrf_exempt
-from rest_framework.authtoken.models import Token
+#from rest_framework.authtoken.models import Token
 from django.contrib.auth import authenticate
-from django.http import HttpResponse,JsonResponse
+#from django.http import HttpResponse,JsonResponse
 
 from .serializers import UserCreateSerializer
 from .models import User
@@ -18,7 +18,7 @@ from .models import User
 @api_view(['POST'])
 @permission_classes([AllowAny])
 @method_decorator(csrf_exempt)
-@ensure_csrf_cookie
+#@ensure_csrf_cookie
 def createUser(request):
     if request.method == 'POST':
         serializer = UserCreateSerializer(data=request.data)
@@ -42,7 +42,7 @@ def createUser(request):
 @api_view(['POST'])
 @permission_classes([AllowAny])
 @method_decorator(csrf_exempt)
-@ensure_csrf_cookie
+#@ensure_csrf_cookie
 def login(request):
     if request.method == 'POST':
         serializer = UserLoginSerializer(data=request.data)
@@ -58,8 +58,8 @@ def login(request):
             
         }
         #res = render(request, 'users/logins')
-        res = HttpResponse({'success':True})
-        res.set_cookie('accesstoken',token)
+        #res = HttpResponse({'success':True})
+        #res.set_cookie('accesstoken',token)
         #HttpResponse.set_cookie('acdsdftoken',token)
 
         #response.set_cookie('csrf',serializer.data['token'])
