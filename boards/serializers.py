@@ -1,5 +1,10 @@
 from rest_framework import serializers
+<<<<<<< HEAD
 from .models import Keyword, Board
+=======
+from .models import Board, Keyword, Filter
+
+>>>>>>> 0327693067534ab5ff41e7507bb778fe7c46cc9f
 
 class BoardSerializer(serializers.ModelSerializer):
 
@@ -26,6 +31,7 @@ class KeywordSerializer(serializers.ModelSerializer):
             'mail'
         )
 
+<<<<<<< HEAD
 '''
 class FilteringSerializer(serializers.ModelSerializer):
     
@@ -33,3 +39,10 @@ class FilteringSerializer(serializers.ModelSerializer):
         model = Filtering
         fields = ('id', 'filter_author', 'title', 'keywordlist', 'emaillist')
 '''
+=======
+class FilterSerializer(serializers.ModelSerializer):
+    
+    class Meta:
+        model = Filter
+        fields = ('id', 'authorr', 'title', 'keywordlist', 'emaillist')
+>>>>>>> 0327693067534ab5ff41e7507bb778fe7c46cc9f

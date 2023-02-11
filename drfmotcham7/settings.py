@@ -11,7 +11,14 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 """
 #import dj_database_url
 from pathlib import Path
+<<<<<<< HEAD
 
+=======
+#import os
+import environ
+
+env = environ.Env()
+>>>>>>> 0327693067534ab5ff41e7507bb778fe7c46cc9f
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -34,18 +41,25 @@ SECRET_KEY = 'django-insecure-clgd+r!(nh9_mb(j3y-8d!_dvt-qd_!4f=sibiupp#pk+h0$x9
 DEBUG = True
 
 # CORS 관련 추가
+<<<<<<< HEAD
 CORS_ORIGIN_WHITELIST = [
     'http://127.0.0.1:8000',
     'https://motchamjing4.herokuapp.com',
     #'*'
     #'http://localhost:3000/'
     ]
+=======
+CORS_ORIGIN_WHITELIST = []
+>>>>>>> 0327693067534ab5ff41e7507bb778fe7c46cc9f
 CORS_ALLOW_CREDENTIALS = True
 
 CORS_ALLOW_CREDENTIALS = True
 
+<<<<<<< HEAD
 
 ALLOWED_HOSTS = ['motchamjing4.herokuapp.com']
+=======
+>>>>>>> 0327693067534ab5ff41e7507bb778fe7c46cc9f
 ALLOWED_HOSTS = ['*']
 
 # Application definition
@@ -101,6 +115,24 @@ WSGI_APPLICATION = 'drfmotcham7.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
+<<<<<<< HEAD
+=======
+
+
+DATABASES = {
+    
+    'default' : {
+        'ENGINE' : 'django.db.backends.postgresql',
+        'NAME' : 'motchamjing44',
+        'USER' : 'postgres',
+        'PASSWORD' : '7662',
+        'HOST' : 'localhost',
+        'PORT' : '5432'
+    }
+}
+DATABASES["default"]["ATOMIC_REQUESTS"] = True
+'''
+>>>>>>> 0327693067534ab5ff41e7507bb778fe7c46cc9f
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
@@ -108,6 +140,7 @@ DATABASES = {
     }
 }
 '''
+<<<<<<< HEAD
 DATABASES = {
     
     'default' : {
@@ -121,6 +154,8 @@ DATABASES = {
 }
 DATABASES["default"]["ATOMIC_REQUESTS"] = True
 '''
+=======
+>>>>>>> 0327693067534ab5ff41e7507bb778fe7c46cc9f
 # Password validation
 # https://docs.djangoproject.com/en/3.2/ref/settings/#auth-password-validators
 
