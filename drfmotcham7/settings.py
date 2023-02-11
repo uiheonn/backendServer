@@ -61,6 +61,8 @@ INSTALLED_APPS = [
     'rest_framework.authtoken',
     'corsheaders', # CORS 관련 추가
     'accounts',
+    'boards',
+    'filter',
 ]
 
 
