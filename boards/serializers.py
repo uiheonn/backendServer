@@ -1,6 +1,5 @@
 from rest_framework import serializers
-from .models import Board
-
+from .models import Keyword, Board
 
 class BoardSerializer(serializers.ModelSerializer):
 
@@ -9,8 +8,28 @@ class BoardSerializer(serializers.ModelSerializer):
         fields = (
                 #'author',
                 'id', 
-                'title', 
-                'body', 
-                #'created_at', 
-                #'modified_at'
+                'keyword', 
+                'mail',
+                'created_at', 
+                'modified_at'
                 )
+
+
+class KeywordSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Keyword
+        fields = (
+            #'key',
+            'id',
+            'keyword',
+            'mail'
+        )
+
+'''
+class FilteringSerializer(serializers.ModelSerializer):
+    
+    class Meta:
+        model = Filtering
+        fields = ('id', 'filter_author', 'title', 'keywordlist', 'emaillist')
+'''

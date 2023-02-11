@@ -11,7 +11,7 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 """
 #import dj_database_url
 from pathlib import Path
-#import os
+
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -38,11 +38,15 @@ CORS_ORIGIN_WHITELIST = [
     'http://127.0.0.1:8000',
     'https://motchamjing4.herokuapp.com',
     #'*'
+    #'http://localhost:3000/'
     ]
 CORS_ALLOW_CREDENTIALS = True
 
+CORS_ALLOW_CREDENTIALS = True
+
+
 ALLOWED_HOSTS = ['motchamjing4.herokuapp.com']
-#ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = ['*']
 
 # Application definition
 
@@ -59,7 +63,10 @@ INSTALLED_APPS = [
     'corsheaders', # CORS 관련 추가
     'boards',
     'piano',
+    'filter',
     #'admin',
+    #'emails',
+    'emaillist',
 ]
 
 
@@ -99,13 +106,19 @@ WSGI_APPLICATION = 'drfmotcham7.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
 
+
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+    
+    'default' : {
+        'ENGINE' : 'django.db.backends.postgresql',
+        'NAME' : 'motchamjing4',
+        'USER' : 'postgres',
+        'PASSWORD' : '7662',
+        'HOST' : 'localhost',
+        'PORT' : '5432'
     }
 }
-
+DATABASES["default"]["ATOMIC_REQUESTS"] = True
 
 # Password validation
 # https://docs.djangoproject.com/en/3.2/ref/settings/#auth-password-validators

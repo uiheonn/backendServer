@@ -21,5 +21,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('users/', include('accounts.urls')),
     path('', include('boards.urls')),
+    path('', include('filter.urls')),
     path('piano/', include('piano.urls')),
+    path('', include('emaillist.urls')),
 ]

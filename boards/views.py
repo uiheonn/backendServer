@@ -3,8 +3,8 @@ from rest_framework import permissions
 from rest_framework import status
 from rest_framework.response import Response
 
-from .serializers import BoardSerializer
-from .models import Board
+from .serializers import KeywordSerializer, BoardSerializer
+from .models import Keyword, Board
 '''
 class BoardViewSet(viewsets.ModelViewSet):
     queryset = Board.objects.all()
@@ -25,3 +25,21 @@ class BoardViewSet(viewsets.ModelViewSet):
 
     def perform_create(self, serializer):
         serializer.save(author=self.request.user)
+
+class KeywordViewSet(viewsets.ModelViewSet):
+    queryset = Keyword.objects.all()
+    serializer_class = KeywordSerializer
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+
+    def perform_create(self, serializer):
+        serializer.save(author=self.request.user)
+'''
+class FilteringViewSet(viewsets.ModelViewSet):
+    queryset = Filtering.objects.all()
+    serializer_class = FilteringSerializer
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+
+    def perform_create(self, serializer):
+        serializer.save(author=self.request.user)
+
+'''
