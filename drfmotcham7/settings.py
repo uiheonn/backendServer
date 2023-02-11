@@ -60,6 +60,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'rest_framework.authtoken',
     'corsheaders', # CORS 관련 추가
+    'accounts',
 ]
 
 
@@ -110,7 +111,7 @@ DATABASES = {
     
     'default' : {
         'ENGINE' : 'django.db.backends.postgresql',
-        'NAME' : 'motchamjing4',
+        'NAME' : 'motchamjing5',
         'USER' : 'postgres',
         'PASSWORD' : '7662',
         'HOST' : 'localhost',
@@ -187,7 +188,7 @@ REST_FRAMEWORK = {
     ]
 }
 
-
+AUTH_USER_MODEL = 'accounts.User'
 
 CORS_ORIGIN_ALLOW_ALL = True
 
