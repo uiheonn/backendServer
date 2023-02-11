@@ -56,3 +56,5 @@ class UserLoginSerializer(serializers.Serializer):
             'email': user.email,
             'token': token1.key
         }
+
+        

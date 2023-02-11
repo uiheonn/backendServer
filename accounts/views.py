@@ -65,3 +65,4 @@ def login(request):
         #response.set_cookie('csrf',serializer.data['token'])
         return Response(response, status=status.HTTP_200_OK)
         #return res
+        
