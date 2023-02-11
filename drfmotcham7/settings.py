@@ -59,10 +59,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     'rest_framework.authtoken',
-    'accounts',
     'corsheaders', # CORS 관련 추가
-    'boards',
-    'piano',
 ]
 
 
@@ -98,7 +95,7 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'drfmotcham7.wsgi.application'
 
-'''
+
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
 DATABASES = {
@@ -120,7 +117,7 @@ DATABASES = {
     }
 }
 DATABASES["default"]["ATOMIC_REQUESTS"] = True
-
+'''
 # Password validation
 # https://docs.djangoproject.com/en/3.2/ref/settings/#auth-password-validators
 
@@ -189,7 +186,7 @@ REST_FRAMEWORK = {
     ]
 }
 
-AUTH_USER_MODEL = 'accounts.User'
+
 
 CORS_ORIGIN_ALLOW_ALL = True
 

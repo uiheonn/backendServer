@@ -19,7 +19,5 @@ from django.conf.urls import include
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('users/', include('accounts.urls')),
-    path('', include('boards.urls')),
-    path('piano/', include('piano.urls')),
+    
 ]
