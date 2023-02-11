@@ -102,7 +102,7 @@ WSGI_APPLICATION = 'drfmotcham7.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
-
+'''
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
@@ -111,18 +111,17 @@ DATABASES = {
 }
 '''
 DATABASES = {
-    
     'default' : {
         'ENGINE' : 'django.db.backends.postgresql',
         'NAME' : 'motchamjing5',
         'USER' : 'postgres',
-        'PASSWORD' : '7662',
+        'PASSWORD' : 'yy7662',
         'HOST' : 'localhost',
         'PORT' : '5432'
     }
 }
 DATABASES["default"]["ATOMIC_REQUESTS"] = True
-'''
+
 # Password validation
 # https://docs.djangoproject.com/en/3.2/ref/settings/#auth-password-validators
 
