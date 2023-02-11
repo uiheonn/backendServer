@@ -63,6 +63,7 @@ INSTALLED_APPS = [
     'accounts',
     'boards',
     'filter',
+    'emaillist',
 ]
 
 

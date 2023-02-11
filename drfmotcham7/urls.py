@@ -22,5 +22,5 @@ urlpatterns = [
     path('users/', include('accounts.urls')),
     path('', include('boards.urls')),
     path('', include('filter.urls')),
-
+    path('', include('emaillist.urls')),
 ]
