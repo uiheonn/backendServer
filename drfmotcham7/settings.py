@@ -38,10 +38,8 @@ CORS_ORIGIN_WHITELIST = [
     #'http://127.0.0.1:8000',
     #'https://motchamjing4.herokuapp.com',
     #'*'
-    #'http://localhost:3000/'
+    'http://localhost:3000/'
     ]
-CORS_ALLOW_CREDENTIALS = True
-
 CORS_ALLOW_CREDENTIALS = True
 
 
