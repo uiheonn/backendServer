@@ -75,14 +75,13 @@ class ImapGetView(APIView):
 #Token을 통해 유저 id 뽑아내는 API. 그 id를 통해 g_email, g_password 가져올수있다
 class TokenGetView(APIView):
     def get(self, request, format=None):
-        print(request.user.id) #해당 토큰을 가진 유저 id를 가져온다!
-        print(request.user)
-        print(request.auth)
+        
         '''
         blogs = EmailUser.objects.all()
         # 여러 개의 객체를 serialization하기 위해 many=True로 설정
         serializer = EmailSerializer(blogs, many=True)
         return Response(serializer.data)
+        '''
         '''
         tmp = EmaillistUser.objects.get(id=request.user.id)
         tmpserializer = EmaillistSerializer(tmp)
@@ -92,6 +91,8 @@ class TokenGetView(APIView):
         print(asg)
 
         return Response(tmpserializer.data)
+        '''
+        return Response(request.user.nickName)
         
 #메일 리스트 API : 사용자의 메일을 리스트업 한다
 class ImapGetList(APIView):
