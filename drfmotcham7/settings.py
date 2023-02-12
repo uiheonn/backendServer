@@ -190,9 +190,7 @@ REST_FRAMEWORK = {
 
 AUTH_USER_MODEL = 'accounts.User'
 
-CORS_ORIGIN_ALLOW_ALL = True
-
-CORS_ALLOW_CREDENTIALS = True
+#CORS_ORIGIN_ALLOW_ALL = True
 
 CORS_ALLOW_HEADERS = (
     'access-control-allow-credentials',
