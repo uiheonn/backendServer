@@ -22,6 +22,8 @@ def find_encoding_info(txt):
     subject, encode = info[0]
     return subject, encode
 
+
+
 #메일 인증 API : post로 해당 정보로 imap 로그인이 되는지 결과 반환
 class ImapView(APIView):
     def post(self, request):
@@ -36,29 +38,28 @@ class ImapView(APIView):
             try:
                 imap.login(tmp, res)
                 if serializer.is_valid():
-                    serializer.validated_data['g_email'] = request.data.get('email')
-                    serializer.validated_data['g_password'] = request.data.get('password')
+                    serializer.validated_data['email'] = request.data.get('email')
+                    serializer.validated_data['password'] = request.data.get('password')
                     serializer.validated_data['g_key'] = request.data.get('gmailkey')
                     serializer.save()
                 return Response({"message":"success"}, status=status.HTTP_200_OK)
             except:
                 return Response({"message":"fail"}, status=status.HTTP_409_CONFLICT)
-        elif tmp.find('@naver.com') != -1:
+        if tmp.find('@naver.com') != -1:
             res = request.data.get('password')
             imap = imaplib.IMAP4_SSL('imap.naver.com')
             try:
                 imap.login(tmp, res)
                 if serializer.is_valid():
-                    serializer.validated_data['n_email'] = request.data.get('email')
-                    serializer.validated_data['n_password'] = request.data.get('password')
+                    serializer.validated_data['email'] = request.data.get('email')
+                    serializer.validated_data['password'] = request.data.get('password')
                     serializer.save()
                 return Response({"message":"success"}, status=status.HTTP_200_OK)
             except:
                 return Response({"message":"fail"}, status=status.HTTP_409_CONFLICT)
-        else:
-            return Response({"message":"it is not right email"}, status=status.HTTP_409_CONFLICT)
+        return Response({"message":"it is not right email"}, status=status.HTTP_409_CONFLICT)
 
-
+'''
 #DB의 사용자 정보를 GET을 통해 조회하는 API
 class ImapGetView(APIView):
     def get_object(self, pk):
@@ -76,13 +77,12 @@ class ImapGetView(APIView):
 class TokenGetView(APIView):
     def get(self, request, format=None):
         
-        '''
-        blogs = EmailUser.objects.all()
+
+        blogs = EmaillistUser.objects.all()
         # 여러 개의 객체를 serialization하기 위해 many=True로 설정
-        serializer = EmailSerializer(blogs, many=True)
+        serializer = EmaillistSerializer(blogs, many=True)
         return Response(serializer.data)
-        '''
-        '''
+
         tmp = EmaillistUser.objects.get(id=request.user.id)
         tmpserializer = EmaillistSerializer(tmp)
         res = tmpserializer.data.get('g_email')
@@ -91,8 +91,8 @@ class TokenGetView(APIView):
         print(asg)
 
         return Response(tmpserializer.data)
-        '''
-        return Response(request.user.nickName)
+
+'''
         
 #메일 리스트 API : 사용자의 메일을 리스트업 한다
 class ImapGetList(APIView):
@@ -225,35 +225,28 @@ class ImapGetList(APIView):
                 print('+'*70)
     
                 #본문 내용 출력하기
-
                 message = ''
-                if email_message.is_multipart():
-                    for part in email_message.get_payload():
-                        if part.get_content_type() == 'text/plain':
-                            bytes = part.get_payload(decode=True)
-                            encode = part.get_content_charset()
-                            message = message + str(bytes, encode)
-                print(message)
-                print('='*70)
-                '''
-                body = ''
                 if email_message.is_multipart():
                     for part in email_message.walk():
                         ctype = part.get_content_type()
                         cdispo = str(part.get('Content-Disposition'))
                         if ctype == 'text/plain' and 'attachment' not in cdispo:
-                            body = part.get_payload(decode=True)  # decode
+                            message = part.get_payload()  # decode
                             break
                     
                 else:
-                    body = email_message.get_payload(decode=True)
-                '''
+                    try:
+                        message = email_message.get_payload()
+                    except:
+                        message = ""
+                print(message)
                 #메일의 시간
                 date = email_message['Date']
                 temp = datetime.strptime(date, '%a, %d %b %Y %H:%M:%S %z')
-
                 emaillist = {"title":subject, "sender":sender, "detail":message}
                 emaillists.append(emaillist)
 
                 i-=1
-            return Response(emaillists)
+            imap.close()
+            imap.logout()
+        return Response(emaillists)

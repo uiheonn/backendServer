@@ -62,6 +62,7 @@ INSTALLED_APPS = [
     'boards',
     'filter',
     'emaillist',
+    'emaillist2',
 ]
 
 
@@ -108,6 +109,7 @@ DATABASES = {
     }
 }
 '''
+'''
 DATABASES = {
     'default' : {
         'ENGINE' : 'django.db.backends.postgresql',
@@ -115,6 +117,18 @@ DATABASES = {
         'USER' : 'qfdmcslsnsjjol',
         'PASSWORD' : 'b61b786a5cb0c5cd41e37f0525ee509c6b16ee236d54850f52967faa4bf6649e',
         'HOST' : 'ec2-18-215-96-22.compute-1.amazonaws.com',
+        'PORT' : '5432'
+    }
+}
+DATABASES["default"]["ATOMIC_REQUESTS"] = True
+'''
+DATABASES = {
+    'default' : {
+        'ENGINE' : 'django.db.backends.postgresql',
+        'NAME' : 'motchamjing4',
+        'USER' : 'postgres',
+        'PASSWORD' : 'yy7662',
+        'HOST' : 'localhost',
         'PORT' : '5432'
     }
 }
@@ -146,8 +160,10 @@ AUTH_PASSWORD_VALIDATORS = [
 # https://docs.djangoproject.com/en/3.2/topics/i18n/
 
 LANGUAGE_CODE = 'en-us'
+#LANGUAGE_CODE = 'ko-KR'
 
-TIME_ZONE = 'UTC'
+#TIME_ZONE = 'UTC'
+TIME_ZONE = 'Asia/Seoul'
 
 USE_I18N = True
 
