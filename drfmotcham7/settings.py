@@ -63,6 +63,8 @@ INSTALLED_APPS = [
     'filter',
     'emaillist',
     'emaillist2',
+    'folders',
+    'myfolders',
 ]
 
 
@@ -121,6 +123,7 @@ DATABASES = {
     }
 }
 DATABASES["default"]["ATOMIC_REQUESTS"] = True
+
 '''
 DATABASES = {
     'default' : {
