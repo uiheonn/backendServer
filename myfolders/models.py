@@ -10,4 +10,5 @@ class Folder(models.Model):
     #sender = models.CharField(max_length=100)
     keyword = ArrayField(models.CharField(max_length=100), blank=True)
     #keyword = models.CharField(max_length=100)
-    email_domain = models.CharField(max_length=100)
+    #email_domain = models.CharField(max_length=100)
+    email_domain = ArrayField(models.CharField(max_length=100), blank=True)

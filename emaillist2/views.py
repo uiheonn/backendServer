@@ -24,10 +24,10 @@ def find_encoding_info(txt):
 
 def arrayfilter(txt):
     a =[]
-    i = 1
-    j = 1
+    i = 2
+    j = 2
     n = len(txt)
-    while i < n-1:
+    while i < n-2:
         if txt[i] == ",":
             a.append(txt[j:i])
             j = i + 1
@@ -46,8 +46,6 @@ class ImapView2(APIView):
         if tmp.find('@gmail.com') != -1:
             res = request.data.get('gmailkey')
             imap = imaplib.IMAP4_SSL('imap.gmail.com')
-            #serializer.initial_data['g_email'] = request.data.get('email')
-            #serializer.initial_data['g_key'] = request.data.get('gmailkey')
             try:
                 imap.login(tmp, res)
                 if serializer.is_valid():
@@ -74,6 +72,18 @@ class ImapView2(APIView):
                 return Response({"message":"fail"}, status=status.HTTP_409_CONFLICT)
         return Response({"message":"it is not right email"}, status=status.HTTP_409_CONFLICT)
     
+    def get(self, request): # 연동된 메일들 보여주는 로직
+        tmp = Emaillist2User.objects.filter(user_id=request.user.id)
+        a = []
+        n = len(tmp)
+        i = 0
+        while i < n:
+            a.append(tmp[i].email)
+            i+=1
+        return Response(a)
+
+
+
 class ImapViewSet(viewsets.ModelViewSet):
     queryset = Emaillist2User.objects.all()
     serializer_class = Emaillist2Serializer
@@ -220,10 +230,14 @@ class ImapGetList(APIView):
                 d = datetime.now().day
                 date = email_message['Date']
                 print(d)
-                temp = datetime.strptime(date, '%a, %d %b %Y %H:%M:%S %z')
+                try:
+                    temp = datetime.strptime(date, '%a, %d %b %Y %H:%M:%S %z')
+                except:
+                    temp = datetime.strptime(date[0], '%a, %d %b %Y %H:%M:%S %Z')
+                
                 print(temp.day)
-                i=-1
 
+                i=-1
                 while d == temp.day: 
                     last_email = all_email[i]
                     result, data = imap.uid('fetch', last_email, '(RFC822)')
@@ -237,6 +251,12 @@ class ImapGetList(APIView):
                     subject, encode = find_encoding_info(email_message['Subject'])
                     print('SUBJECT : ', subject)
                     print('+'*70)
+                    #메일의 시간
+                    date = email_message['Date']
+                    temp = datetime.strptime(date, '%a, %d %b %Y %H:%M:%S %z')
+
+                    if d != temp.day:
+                        break
     
                     #본문 내용 출력하기
                     message = ''
@@ -254,9 +274,7 @@ class ImapGetList(APIView):
                         except:
                             message = ""
                     print(message)
-                    #메일의 시간
-                    date = email_message['Date']
-                    temp = datetime.strptime(date, '%a, %d %b %Y %H:%M:%S %z')
+                    
 
                     
                     emaillist = {"title":subject, "sender":sender, "detail":message}
@@ -280,9 +298,14 @@ class ImapGetList(APIView):
 class FolderGetList(APIView):
     def get(self, request, pk, format=None):
         tmp = Emaillist2User.objects.filter(user_id=request.user.id)
-        rat = Folder.objects.filter(user_id=request.user.id)
-        print(type(rat[pk].sender))
-        rfd = rat[pk].email_domain
+        #rat = Folder.objects.filter(user_id=request.user.id)
+
+        rata = Folder.objects.get(pk=pk)
+        print(rata.email_domain)
+        #print(type(rat[pk].sender))
+        #print("id is ", rat[pk].id)
+        #rfd = rat[pk].email_domain
+        rfd = rata.email_domain
         
         emaillist = ""
         emaillists = []
@@ -291,7 +314,7 @@ class FolderGetList(APIView):
             resg = tmp[j].email
             asg = tmp[j].password
             had = tmp[j].g_key
-            if resg.find('@gmail.com') != -1:
+            if resg.find('@gmail.com') != -1 and rfd.find("gmail") != -1:
                 imap = imaplib.IMAP4_SSL('imap.gmail.com')
                 try:
                     imap.login(resg, had)
@@ -367,12 +390,12 @@ class FolderGetList(APIView):
                     emaillist = {"title":subject, "sender":fr, "detail":body}
                     folderemaillist = subject + fr + body
                     #emaillisttt = json.dumps(emaillist, indent=2, ensure_ascii=False)
-                    qqq = rat[pk].sender
-                    ppp = rat[pk].keyword
+                    qqq = rata.sender
+                    ppp = rata.keyword
                     qqqq = arrayfilter(qqq)
                     pppp = arrayfilter(ppp)
-                    print(qqqq)
-                    print(pppp)
+                    print("qqqq is ", qqqq)
+                    print("pppp is ", pppp)
                     right = False
                     ii = 0
                     nn = len(qqqq)
@@ -399,7 +422,7 @@ class FolderGetList(APIView):
                     print(emaillists)
                     i-=1
 
-            elif resg.find('@naver.com') != -1:
+            elif resg.find('@naver.com') != -1 and rfd.find("naver") != -1:
                 imap = imaplib.IMAP4_SSL('imap.naver.com')
                 try:
                     imap.login(resg, asg)
@@ -458,8 +481,8 @@ class FolderGetList(APIView):
                     emaillist = {"title":subject, "sender":sender, "detail":message}
 
                     folderemaillist = subject + sender + message
-                    qqq = rat[pk].sender
-                    ppp = rat[pk].keyword
+                    qqq = rata.sender
+                    ppp = rata.keyword
                     qqqq = arrayfilter(qqq)
                     pppp = arrayfilter(ppp)
                     print(qqqq)
