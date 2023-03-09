@@ -24,5 +24,6 @@ urlpatterns = [
     path('', include('filter.urls')),
     path('', include('emaillist.urls')),
     path('', include('emaillist2.urls')),
-    path('', include('myfolders.urls'))
+    path('', include('myfolders.urls')),
+    path('', include('keywords.urls')),
 ]

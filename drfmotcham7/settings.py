@@ -65,6 +65,7 @@ INSTALLED_APPS = [
     'emaillist2',
     'folders',
     'myfolders',
+    'keywords',
 ]
 
 
