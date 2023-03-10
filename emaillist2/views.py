@@ -207,7 +207,7 @@ class ImapGetList(APIView):
                         body = email_message.get_payload(decode=True)
                     body = body.decode('utf-8')
 
-                    emaillist = {"title":subject, "sender":fr, "detail":body}
+                    emaillist = {"title":subject, "sender":fr, "detail":body, "date":temp}
                     #emaillisttt = json.dumps(emaillist, indent=2, ensure_ascii=False)
                     emaillists.append(emaillist)
                     print(emaillists)
@@ -277,7 +277,7 @@ class ImapGetList(APIView):
                     
 
                     
-                    emaillist = {"title":subject, "sender":sender, "detail":message}
+                    emaillist = {"title":subject, "sender":sender, "detail":message, "date":temp}
                     emaillists.append(emaillist)
 
                     i-=1
@@ -387,7 +387,7 @@ class FolderGetList(APIView):
                         body = email_message.get_payload(decode=True)
                     body = body.decode('utf-8')
 
-                    emaillist = {"title":subject, "sender":fr, "detail":body}
+                    emaillist = {"title":subject, "sender":fr, "detail":body, "date":temp}
                     folderemaillist = subject + fr + body
                     #emaillisttt = json.dumps(emaillist, indent=2, ensure_ascii=False)
                     qqq = rata.sender
@@ -478,7 +478,7 @@ class FolderGetList(APIView):
                     temp = datetime.strptime(date, '%a, %d %b %Y %H:%M:%S %z')
 
                     
-                    emaillist = {"title":subject, "sender":sender, "detail":message}
+                    emaillist = {"title":subject, "sender":sender, "detail":message, "date":temp}
 
                     folderemaillist = subject + sender + message
                     qqq = rata.sender
