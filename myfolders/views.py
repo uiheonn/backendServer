@@ -20,8 +20,11 @@ class FolderView(APIView):
         tmp = Folder.objects.filter(user_id = request.user.id)
         
         serializer = FolderSerializer(tmp, many=True)
-        
-        return Response(serializer.data)
+        last = []
+        tete = {"user":request.user.id, "folder_name":"전체"}
+        last.append(tete)
+        last.append(serializer.data)
+        return Response(last)
         '''
         res = []
         i=0
