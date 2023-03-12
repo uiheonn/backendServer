@@ -10,6 +10,9 @@ from rest_framework.views import APIView
 class FolderView(APIView):
     def post(self, request):
         serializer = FolderSerializer(data=request.data)
+        serializer.fields['sender'].required = False
+        serializer.fields['keyword'].required = False
+        serializer.fields['email_domain'].required = False
         if serializer.is_valid(): 
             serializer.save(user=request.user)
             serializer.save()

@@ -140,7 +140,7 @@ class ImapGetList(APIView):
                 try:
                     imap.login(resg, had)
                 except:
-                    return Response("imap gmail information is not matcded")
+                    return Response({"imap gmail information":" is not matcded"})
                 imap.select("INBOX")
                 status, messages = imap.uid('search', None, 'ALL')
 
@@ -299,7 +299,7 @@ class ImapGetList(APIView):
                 try:
                     imap.login(resg, asg)
                 except:
-                    return Response("imap naver information is not matcded")
+                    return Response({"imap naver information ":" is not matcded"})
 
                 imap.select('INBOX')
                 resp, data = imap.uid('search', None, 'All')
@@ -401,7 +401,7 @@ class FolderGetList(APIView):
                 try:
                     imap.login(resg, had)
                 except:
-                    return Response("imap gmail information is not matcded")
+                    return Response({"imap gmail information ":" is not matcded"})
                 imap.select("INBOX")
                 status, messages = imap.uid('search', None, 'ALL')
 
@@ -509,7 +509,7 @@ class FolderGetList(APIView):
                 try:
                     imap.login(resg, asg)
                 except:
-                    return Response("imap naver information is not matcded")
+                    return Response({"imap naver information ":" is not matcded"})
             
                 imap.select('INBOX')
                 resp, data = imap.uid('search', None, 'All')
