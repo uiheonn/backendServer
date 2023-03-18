@@ -15,11 +15,10 @@ from .models import User
 #from django.shortcuts import render
 
 
-
-#@method_decorator(csrf_exempt)
-#@ensure_csrf_cookie
 @api_view(['POST'])
 @permission_classes([AllowAny])
+@method_decorator(csrf_exempt)
+#@ensure_csrf_cookie
 def createUser(request):
     if request.method == 'POST':
         serializer = UserCreateSerializer(data=request.data)
@@ -40,11 +39,10 @@ def createUser(request):
         return Response({"message": "duplicate email"}, status=status.HTTP_409_CONFLICT)
 
 
-
-#@method_decorator(csrf_exempt)
-#@ensure_csrf_cookie
 @api_view(['POST'])
 @permission_classes([AllowAny])
+@method_decorator(csrf_exempt)
+#@ensure_csrf_cookie
 def login(request):
     if request.method == 'POST':
         serializer = UserLoginSerializer(data=request.data)
