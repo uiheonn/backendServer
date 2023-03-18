@@ -16,7 +16,7 @@ from .models import User
 
 
 @api_view(['POST'])
-@permission_classes((AllowAny,))
+@permission_classes([AllowAny])
 def createUser(request):
     if request.method == 'POST':
         serializer = UserCreateSerializer(data=request.data)
@@ -38,7 +38,7 @@ def createUser(request):
 
 
 @api_view(['POST'])
-@permission_classes((AllowAny,))
+@permission_classes([AllowAny])
 def login(request):
     if request.method == 'POST':
         serializer = UserLoginSerializer(data=request.data)
