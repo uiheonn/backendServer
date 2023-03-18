@@ -9,16 +9,16 @@ from django.views.decorators.csrf import csrf_exempt
 #from rest_framework.authtoken.models import Token
 from django.contrib.auth import authenticate
 #from django.http import HttpResponse,JsonResponse
-
+from rest_framework.views import APIView
 from .serializers import UserCreateSerializer
 from .models import User
 #from django.shortcuts import render
+from rest_framework.permissions import AllowAny
 
 
-@api_view(['POST'])
-@permission_classes([AllowAny])
-def createUser(request):
-    if request.method == 'POST':
+class registerView(APIView):
+    def post(self, request):
+        permission_classes = [AllowAny]
         serializer = UserCreateSerializer(data=request.data)
         #user = authenticate(UserCreateSerializer.password)
         #user = UserCreateSerializer.user
@@ -26,7 +26,7 @@ def createUser(request):
 
         if not serializer.is_valid(raise_exception=True):
             return Response({"message": "Request Body Error."}, status=status.HTTP_409_CONFLICT)
-        if User.objects.filter(email=serializer.validated_data['email']).first() is None:
+        elif User.objects.filter(email=serializer.validated_data['email']).first() is None:
             serializer.save()
             #token = Token.objects.create(user=user) # 유저가 있으면 가져오고, 없으면 토큰을 생성한다.
             return Response({
@@ -34,13 +34,13 @@ def createUser(request):
                             #"Token": token.key
                             },
                             status=status.HTTP_201_CREATED)
-        return Response({"message": "duplicate email"}, status=status.HTTP_409_CONFLICT)
+        else:
+            return Response({"message": "duplicate email"}, status=status.HTTP_409_CONFLICT)
 
 
-@api_view(['POST'])
-@permission_classes([AllowAny])
-def login(request):
-    if request.method == 'POST':
+class loginView(APIView):
+    def post(self, request):
+        permission_classes = [AllowAny]
         serializer = UserLoginSerializer(data=request.data)
         if not serializer.is_valid(raise_exception=True):
             return Response({"message": "Request Body Error."}, status=status.HTTP_409_CONFLICT)
@@ -61,4 +61,4 @@ def login(request):
         #response.set_cookie('csrf',serializer.data['token'])
         return Response(response, status=status.HTTP_200_OK)
         #return res
-        
+
