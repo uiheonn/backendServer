@@ -37,6 +37,7 @@ DEBUG = True
 LOGIN_REQUIRED = False
 LOGIN_URL = 'https://motchamjing4.herokuapp.com/users/registers'
 LOGIN_URL = 'https://motchamjing4.herokuapp.com/users/logins'
+LOGIN_URL = 'https://mail-motchamjee.netlify.app'
 
 # CORS 관련 추가
 CORS_ORIGIN_WHITELIST = [
