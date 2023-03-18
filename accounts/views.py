@@ -9,6 +9,7 @@ from django.views.decorators.csrf import csrf_exempt
 #from rest_framework.authtoken.models import Token
 from django.contrib.auth import authenticate
 #from django.http import HttpResponse,JsonResponse
+from rest_framework.authtoken.models import Token
 
 from .serializers import UserCreateSerializer
 from .models import User
@@ -29,11 +30,11 @@ def createUser(request):
         if not serializer.is_valid(raise_exception=True):
             return Response({"message": "Request Body Error."}, status=status.HTTP_409_CONFLICT)
         if User.objects.filter(email=serializer.validated_data['email']).first() is None:
-            serializer.save()
-            #token = Token.objects.create(user=user) # 유저가 있으면 가져오고, 없으면 토큰을 생성한다.
+            user = serializer.save()
+            token = Token.objects.create(user=user) # 유저가 있으면 가져오고, 없으면 토큰을 생성한다.
             return Response({
                             "message": "ok",
-                            #"Token": token.key
+                            "Token": token.key
                             },
                             status=status.HTTP_201_CREATED)
         return Response({"message": "duplicate email"}, status=status.HTTP_409_CONFLICT)

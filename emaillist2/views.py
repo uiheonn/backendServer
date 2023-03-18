@@ -693,10 +693,12 @@ class ImapView2(APIView):
         a = []
         n = len(tmp)
         i = 0
+        if n == 0:
+            return Response({"auth mail is not exist"}, status=status.HTTP_409_CONFLICT)
         while i < n:
             a.append(tmp[i].email)
             i+=1
-        return Response(a)
+        return Response(a, status=status.HTTP_200_OK)
 
 
 
@@ -713,11 +715,13 @@ class ImapGetView(APIView):
         try:
             return Emaillist2User.objects.get(pk=pk)
         except Emaillist2User.DoesNotExist:
-            return Response("message : not exist id", status=status.HTTP_409_CONFLICT)
+            return False 
     
     # Blog의 detail 보기
     def get(self, request, pk, format=None):
         blog = self.get_object(pk)
+        if blog == False:
+            return Response("{message : not exist id}", status=status.HTTP_409_CONFLICT)
         serializer = Emaillist2Serializer(blog)
         try:
             if serializer:

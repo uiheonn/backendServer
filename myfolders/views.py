@@ -27,11 +27,10 @@ class FolderView(APIView):
         #tete = {"user":request.user.id, "folder_name":"전체"}
         #last.append(tete)
         #last.append(serializer.data)
-        try:
-            if serializer.data:
-                return Response(serializer.data, status=status.HTTP_200_OK)
-        except:
-            return Response({"no folder"}, status=status.HTTP_409_CONFLICT)
+
+        if serializer.data:
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response({"no folder"}, status=status.HTTP_409_CONFLICT)
         '''
         res = []
         i=0

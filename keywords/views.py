@@ -19,7 +19,7 @@ class KeywordView(APIView):
     def get(self, request):
         tmp = KeywordUser.objects.filter(user_id = request.user.id)
         serializer = KeywordSerializer(tmp, many=True)
-
+        
         return Response(serializer.data, status=status.HTTP_200_OK)
     
 
