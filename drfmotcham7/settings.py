@@ -198,7 +198,7 @@ REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
         #'rest_framework_jwt.authentication.JSONWebTokenAuthentication',
         #'rest_framework.authentication.SessionAuthentication',
-        'rest_framework.authentication.BasicAuthentication',
+        #'rest_framework.authentication.BasicAuthentication',
         'rest_framework.authentication.TokenAuthentication',
     ],
     'DEFAULT_RENDERER_CLASSES': [
@@ -248,3 +248,5 @@ CSRF_COOKIE_NAME = 'csrftoken'
 
 CSRF_HEADER_NAME = 'X-CSRFToken'
 '''
+
+DEFAULT_CHARSET = 'utf-8'

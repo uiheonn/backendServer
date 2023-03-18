@@ -10,5 +10,4 @@ class FolderSerializer(serializers.ModelSerializer):
             'folder_name',
             'sender',
             'keyword',
-            'email_domain',
         )

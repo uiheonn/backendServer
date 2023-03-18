@@ -12,8 +12,8 @@ class FolderView(APIView):
         serializer = FolderSerializer(data=request.data)
         serializer.fields['sender'].required = False
         serializer.fields['keyword'].required = False
-        serializer.fields['email_domain'].required = False
-        if serializer.is_valid(): 
+        
+        if serializer.is_valid():
             serializer.save(user=request.user)
             serializer.save()
             return Response({"message : ok"}, status=status.HTTP_200_OK)

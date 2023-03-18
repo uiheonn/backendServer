@@ -34,6 +34,535 @@ def arrayfilter(txt):
         i+=1
     a.append(txt[j:i])
     return a
+# a = resg, b = asg, c = had
+def gmaillists(a,c):
+    emaillists = []
+    if a.find('gmail') != -1:
+        imap = imaplib.IMAP4_SSL('imap.gmail.com')
+        try:
+            imap.login(a, c)
+        except:
+            return Response({"imap gmail information":" is not matched"})
+        imap.select("INBOX")
+        status, messages = imap.uid('search', None, 'ALL')
+
+        messages = messages[0].split()
+
+        r_email = messages[-1]
+
+        res, msg = imap.uid('fetch', r_email, "(RFC822)")
+
+        raw = msg[0][1].decode('utf-8')
+
+        email_message = email.message_from_string(raw)
+        d = datetime.now().day
+        date = decode_header(email_message.get("Date"))[0]
+        #print(date)
+        try:
+            temp = datetime.strptime(date[0], '%a, %d %b %Y %H:%M:%S %z')
+        except:
+            temp = datetime.strptime(date[0], '%a, %d %b %Y %H:%M:%S %Z')
+        i = -1
+        while d == temp.day:
+
+            r_email = messages[i]
+            # fetch 명령어로 메일 가져오기
+            res, msg = imap.uid('fetch', r_email, "(RFC822)")
+            # 사람이 읽을 수 있는 형태로 변환
+            raw = msg[0][1].decode('utf-8')
+            #print(raw)
+            # raw_readable에서 원하는 부분만 파싱하기 위해 email 모듈을 이용해 변환
+            email_message = email.message_from_string(raw)
+
+            # 보낸사람
+            fr = make_header(decode_header(email_message.get('From')))
+            fr = str(fr)
+            print(fr)
+
+            # 메일 제목
+            subject = make_header(decode_header(email_message.get('Subject')))
+            subject = str(subject)
+            print(subject)
+
+            #메일 시간
+            date = decode_header(email_message.get("Date"))[0]
+            try:
+                temp = datetime.strptime(date[0], '%a, %d %b %Y %H:%M:%S %z')
+            except:
+                temp = datetime.strptime(date[0], '%a, %d %b %Y %H:%M:%S %Z')
+            
+            if d != temp.day:
+                break
+
+            # 메일 내용
+            if email_message.is_multipart():
+                for part in email_message.walk():
+                    ctype = part.get_content_type()
+                    cdispo = str(part.get('Content-Disposition'))
+                    if ctype == 'text/plain' and 'attachment' not in cdispo:
+                        body = part.get_payload(decode=True)  # decode
+                        break
+                    
+            else:
+                body = email_message.get_payload(decode=True)
+            body = body.decode('utf-8')
+            emaillist = {"title":subject, "sender":fr, "detail":body, "date":temp}
+            emaillists.append(emaillist)
+            i-=1    
+            
+    return emaillists
+
+def naverlists(a,b,naverres):
+    if a.find("naver") != -1:
+        imap = imaplib.IMAP4_SSL('imap.naver.com')
+        try:
+            imap.login(a,b)
+        except:
+            return Response("imap naver information is not matcded")
+        imap.select("INBOX")
+        status, messages = imap.uid('search', None, 'ALL')
+
+        messages = messages[0].split()
+
+        r_email = messages[-1]
+
+        res, msg = imap.uid('fetch', r_email, "(RFC822)")
+
+        raw = msg[0][1].decode('utf-8')
+
+        email_message = email.message_from_string(raw)
+        d = datetime.now().day
+        date = decode_header(email_message.get("Date"))[0]
+        #print(date)
+        try:
+            temp = datetime.strptime(date[0], '%a, %d %b %Y %H:%M:%S %z')
+        except:
+            temp = datetime.strptime(date[0], '%a, %d %b %Y %H:%M:%S %Z')
+        i = -1
+        while d == temp.day:
+
+            r_email = messages[i]
+            # fetch 명령어로 메일 가져오기
+            res, msg = imap.uid('fetch', r_email, "(RFC822)")
+            # 사람이 읽을 수 있는 형태로 변환
+            raw = msg[0][1].decode('utf-8')
+            #print(raw)
+            # raw_readable에서 원하는 부분만 파싱하기 위해 email 모듈을 이용해 변환
+            email_message = email.message_from_string(raw)
+
+            # 보낸사람
+            fr = make_header(decode_header(email_message.get('From')))
+            fr = str(fr)
+            print(fr)
+
+            # 메일 제목
+            subject = make_header(decode_header(email_message.get('Subject')))
+            subject = str(subject)
+            print(subject)
+
+            #메일 시간
+            date = decode_header(email_message.get("Date"))[0]
+            #print(date)
+            try:
+                temp = datetime.strptime(date[0], '%a, %d %b %Y %H:%M:%S %z')
+            except:
+                temp = datetime.strptime(date[0], '%a, %d %b %Y %H:%M:%S %Z')
+            #print(temp.day)
+            
+            if d != temp.day:
+                break
+
+            # 메일 내용
+            body = ""
+            try:
+                if email_message.is_multipart():
+                    for part in email_message.walk():
+                        ctype = part.get_content_type()
+                        cdispo = str(part.get('Content-Disposition'))
+                        if ctype == 'text/plain' and 'attachment' not in cdispo:
+                            body = part.get_payload(decode=True)  # decode
+                            break
+                                
+                else:
+                    body = email_message.get_payload(decode=True)
+                body = body.decode('utf-8')
+            except:
+                body = body
+            
+            emaillist = {"title":subject, "sender":fr, "detail":body, "date":temp}
+            #emaillisttt = json.dumps(emaillist, indent=2, ensure_ascii=False)
+            naverres.append(emaillist)
+            
+            i-=1
+    return naverres
+
+def naverbytes(a,b,naverbyte):
+    if a.find('naver') != -1:
+        imap = imaplib.IMAP4_SSL('imap.naver.com')
+        try:
+            imap.login(a,b)
+        except:
+            return Response({"imap naver information ":" is not matcded"})
+        imap.select('INBOX')
+        resp, data = imap.uid('search', None, 'All')
+        all_email = data[0].split()
+        last_email = all_email[-1]
+        result, data = imap.uid('fetch', last_email, '(RFC822)')
+        raw = data[0][1]
+        email_message = email.message_from_bytes(raw, policy = policy.default)
+        d = datetime.now().day
+        date = email_message['Date']
+        print(d)
+        try:
+            temp = datetime.strptime(date, '%a, %d %b %Y %H:%M:%S %z')
+        except:
+            temp = datetime.strptime(date, '%a, %d %b %Y %H:%M:%S %Z')
+
+        print(temp.day)
+
+        i=-1
+        while d == temp.day: 
+            last_email = all_email[i]
+            result, data = imap.uid('fetch', last_email, '(RFC822)')
+            raw_email = data[0][1]
+            email_message = email.message_from_bytes(raw_email, policy = policy.default)
+
+            #보낸이
+            sender = email_message['From']
+
+            # 제목 가져오기
+            subject, encode = find_encoding_info(email_message['Subject'])
+            print('SUBJECT : ', subject)
+            print('+'*70)
+
+            #메일의 시간
+            date = email_message['Date']
+            print(date)
+            try:
+                temp = datetime.strptime(date, '%a, %d %b %Y %H:%M:%S %z')
+            except:
+                temp = datetime.strptime(date, '%a, %d %b %Y %H:%M:%S %Z')
+            print(i, "번 메일의 시간", temp.day)
+            print("현재 날짜 ", d)
+            if d != temp.day:
+                print("break문 실행")
+                break
+            
+            #본문 내용 출력하기
+            message = ''
+            try:
+                if email_message.is_multipart():
+                    for part in email_message.walk():
+                        ctype = part.get_content_type()
+                        cdispo = str(part.get('Content-Disposition'))
+                        if ctype == 'text/plain' and 'attachment' not in cdispo:
+                            message = part.get_payload(decode=True)  # decode
+                            message = message.decode('utf-8')
+                            break
+                    
+                else:
+                    message = email_message.get_payload(decode=True)
+                #print(message)
+            except:
+                message = message    
+
+                    
+            emaillist = {"title":subject, "sender":sender, "detail":message, "date":temp}
+            naverbyte.append(emaillist)
+
+            i-=1
+
+        return naverbyte
+
+def foldergmaillists(a,c,q,p):
+    emaillists = []
+    if a.find('gmail') != -1:
+        imap = imaplib.IMAP4_SSL('imap.gmail.com')
+        try:
+            imap.login(a, c)
+        except:
+            return Response({"imap gmail information":" is not matched"})
+        imap.select("INBOX")
+        status, messages = imap.uid('search', None, 'ALL')
+
+        messages = messages[0].split()
+
+        r_email = messages[-1]
+
+        res, msg = imap.uid('fetch', r_email, "(RFC822)")
+
+        raw = msg[0][1].decode('utf-8')
+
+        email_message = email.message_from_string(raw)
+        d = datetime.now().day
+        date = decode_header(email_message.get("Date"))[0]
+        #print(date)
+        try:
+            temp = datetime.strptime(date[0], '%a, %d %b %Y %H:%M:%S %z')
+        except:
+            temp = datetime.strptime(date[0], '%a, %d %b %Y %H:%M:%S %Z')
+        i = -1
+        while d == temp.day:
+
+            r_email = messages[i]
+            # fetch 명령어로 메일 가져오기
+            res, msg = imap.uid('fetch', r_email, "(RFC822)")
+            # 사람이 읽을 수 있는 형태로 변환
+            raw = msg[0][1].decode('utf-8')
+            #print(raw)
+            # raw_readable에서 원하는 부분만 파싱하기 위해 email 모듈을 이용해 변환
+            email_message = email.message_from_string(raw)
+
+            # 보낸사람
+            fr = make_header(decode_header(email_message.get('From')))
+            fr = str(fr)
+            print(fr)
+
+            # 메일 제목
+            subject = make_header(decode_header(email_message.get('Subject')))
+            subject = str(subject)
+            print(subject)
+
+            #메일 시간
+            date = decode_header(email_message.get("Date"))[0]
+            try:
+                temp = datetime.strptime(date[0], '%a, %d %b %Y %H:%M:%S %z')
+            except:
+                temp = datetime.strptime(date[0], '%a, %d %b %Y %H:%M:%S %Z')
+            
+            if d != temp.day:
+                break
+
+            # 메일 내용
+            if email_message.is_multipart():
+                for part in email_message.walk():
+                    ctype = part.get_content_type()
+                    cdispo = str(part.get('Content-Disposition'))
+                    if ctype == 'text/plain' and 'attachment' not in cdispo:
+                        body = part.get_payload(decode=True)  # decode
+                        break
+                    
+            else:
+                body = email_message.get_payload(decode=True)
+            body = body.decode('utf-8')
+            emaillist = {"title":subject, "sender":fr, "detail":body, "date":temp}
+            folderemaillist = subject + fr + body
+            right = False
+            ii = 0
+            qq = arrayfilter(q)
+            pp = arrayfilter(p)
+            nn = len(qq)
+            while ii < nn:
+                if folderemaillist.find(qq[ii]) != -1:
+                    rigth = True
+                    break
+                ii+=1
+            jj = 0
+            mm = len(pp)
+            while jj < mm:
+                if folderemaillist.find(pp[jj]) != -1:
+                    right = True
+                    break
+                jj+=1
+            
+            if right == False:
+                i-=1
+                continue
+            emaillists.append(emaillist)
+
+            i-=1    
+            
+    return emaillists
+
+def foldernaverlists(a,b,naverres,q,p):
+    if a.find('naver') != -1:
+        imap = imaplib.IMAP4_SSL('imap.naver.com')
+        try:
+            imap.login(a, b)
+        except:
+            return Response({"imap naver information":" is not matched"})
+        imap.select("INBOX")
+        status, messages = imap.uid('search', None, 'ALL')
+
+        messages = messages[0].split()
+
+        r_email = messages[-1]
+
+        res, msg = imap.uid('fetch', r_email, "(RFC822)")
+
+        raw = msg[0][1].decode('utf-8')
+
+        email_message = email.message_from_string(raw)
+        d = datetime.now().day
+        date = decode_header(email_message.get("Date"))[0]
+        #print(date)
+        try:
+            temp = datetime.strptime(date[0], '%a, %d %b %Y %H:%M:%S %z')
+        except:
+            temp = datetime.strptime(date[0], '%a, %d %b %Y %H:%M:%S %Z')
+        i = -1
+        while d == temp.day:
+
+            r_email = messages[i]
+            # fetch 명령어로 메일 가져오기
+            res, msg = imap.uid('fetch', r_email, "(RFC822)")
+            # 사람이 읽을 수 있는 형태로 변환
+            raw = msg[0][1].decode('utf-8')
+            #print(raw)
+            # raw_readable에서 원하는 부분만 파싱하기 위해 email 모듈을 이용해 변환
+            email_message = email.message_from_string(raw)
+
+            # 보낸사람
+            fr = make_header(decode_header(email_message.get('From')))
+            fr = str(fr)
+            print(fr)
+
+            # 메일 제목
+            subject = make_header(decode_header(email_message.get('Subject')))
+            subject = str(subject)
+            print(subject)
+
+            #메일 시간
+            date = decode_header(email_message.get("Date"))[0]
+            try:
+                temp = datetime.strptime(date[0], '%a, %d %b %Y %H:%M:%S %z')
+            except:
+                temp = datetime.strptime(date[0], '%a, %d %b %Y %H:%M:%S %Z')
+            
+            if d != temp.day:
+                break
+
+            # 메일 내용
+            if email_message.is_multipart():
+                for part in email_message.walk():
+                    ctype = part.get_content_type()
+                    cdispo = str(part.get('Content-Disposition'))
+                    if ctype == 'text/plain' and 'attachment' not in cdispo:
+                        body = part.get_payload(decode=True)  # decode
+                        break
+                    
+            else:
+                body = email_message.get_payload(decode=True)
+            body = body.decode('utf-8')
+            emaillist = {"title":subject, "sender":fr, "detail":body, "date":temp}
+            folderemaillist = subject + fr + body
+            right = False
+            ii = 0
+            qq = arrayfilter(q)
+            pp = arrayfilter(p)
+            nn = len(qq)
+            while ii < nn:
+                if folderemaillist.find(qq[ii]) != -1:
+                    rigth = True
+                    break
+                ii+=1
+            jj = 0
+            mm = len(pp)
+            while jj < mm:
+                if folderemaillist.find(pp[jj]) != -1:
+                    right = True
+                    break
+                jj+=1
+            
+            if right == False:
+                i-=1
+                continue
+            naverres.append(emaillist)
+
+            i-=1    
+            
+    return naverres
+
+def foldernaverbytes(a,b,naverbyte,q,p):
+    if a.find('naver') != -1:
+        imap = imaplib.IMAP4_SSL('imap.naver.com')
+        try:
+            imap.login(a,b)
+        except:
+            return Response({"imap naver information ":" is not matcded"})
+        imap.select('INBOX')
+        resp, data = imap.uid('search', None, 'All')
+        all_email = data[0].split()
+        last_email = all_email[-1]
+        result, data = imap.uid('fetch', last_email, '(RFC822)')
+        raw = data[0][1]
+        email_message = email.message_from_bytes(raw, policy = policy.default)
+        d = datetime.now().day
+        date = email_message['Date']
+        print(d)
+        try:
+            temp = datetime.strptime(date, '%a, %d %b %Y %H:%M:%S %z')
+        except:
+            temp = datetime.strptime(date[0], '%a, %d %b %Y %H:%M:%S %Z')
+
+        print(temp.day)
+
+        i=-1
+        while d == temp.day: 
+            last_email = all_email[i]
+            result, data = imap.uid('fetch', last_email, '(RFC822)')
+            raw_email = data[0][1]
+            email_message = email.message_from_bytes(raw_email, policy = policy.default)
+
+            #보낸이
+            sender = email_message['From']
+
+            # 제목 가져오기
+            subject, encode = find_encoding_info(email_message['Subject'])
+            print('SUBJECT : ', subject)
+            print('+'*70)
+            #메일의 시간
+            date = email_message['Date']
+            try:
+                temp = datetime.strptime(date, '%a, %d %b %Y %H:%M:%S %z')
+            except:
+                temp = datetime.strptime(date[0], '%a, %d %b %Y %H:%M:%S %Z')
+
+            if d != temp.day:
+                break
+                        
+            #본문 내용 출력하기
+            message = ''
+            if email_message.is_multipart():
+                for part in email_message.walk():
+                    ctype = part.get_content_type()
+                    cdispo = str(part.get('Content-Disposition'))
+                    if ctype == 'text/plain' and 'attachment' not in cdispo:
+                        message = part.get_payload(decode=True)  # decode
+                        message = message.decode('utf-8')
+                        break
+                    
+            else:
+                message = email_message.get_payload(decode=True)
+            
+            emaillist = {"title":subject, "sender":sender, "detail":message, "date":temp}
+            folderemaillist = subject + sender + message
+            right = False
+            ii = 0
+            qq = arrayfilter(q)
+            pp = arrayfilter(p)
+            nn = len(qq)
+            while ii < nn:
+                if folderemaillist.find(qq[ii]) != -1:
+                    rigth = True
+                    break
+                ii+=1
+            jj = 0
+            mm = len(pp)
+            while jj < mm:
+                if folderemaillist.find(pp[jj]) != -1:
+                    right = True
+                    break
+                jj+=1
+            
+            if right == False:
+                i-=1
+                continue
+            naverbyte.append(emaillist)
+
+            i-=1
+    return naverbyte
+
 
 
 
@@ -97,7 +626,7 @@ class ImapGetView(APIView):
         try:
             return Emaillist2User.objects.get(pk=pk)
         except Emaillist2User.DoesNotExist:
-            return Response("message:do not exist id")
+            return Response("message:do not exist id", status=status.HTTP_409_CONFLICT)
     
     # Blog의 detail 보기
     def get(self, request, pk, format=None):
@@ -126,254 +655,23 @@ class TokenGetView(APIView):
 class ImapGetList(APIView):
     def get(self, request, format=None):
         tmp = Emaillist2User.objects.filter(user_id=request.user.id)
+        print("tmp개수 : ", len(tmp))
         #tmp = tmp[0].g_key
         #tmp = str(tmp)
+        res = []
         j=0
-        emaillist = ""
-        emaillists = []
         while j < len(tmp):
             resg = tmp[j].email
             asg = tmp[j].password
             had = tmp[j].g_key
-            if resg.find('@gmail.com') != -1:
-                imap = imaplib.IMAP4_SSL('imap.gmail.com')
-                try:
-                    imap.login(resg, had)
-                except:
-                    return Response({"imap gmail information":" is not matcded"})
-                imap.select("INBOX")
-                status, messages = imap.uid('search', None, 'ALL')
-
-                messages = messages[0].split()
-
-                r_email = messages[-1]
-
-                res, msg = imap.uid('fetch', r_email, "(RFC822)")
-
-                raw = msg[0][1].decode('utf-8')
-
-                email_message = email.message_from_string(raw)
-                d = datetime.now().day
-                date = decode_header(email_message.get("Date"))[0]
-                #print(date)
-                try:
-                    temp = datetime.strptime(date[0], '%a, %d %b %Y %H:%M:%S %z')
-                except:
-                    temp = datetime.strptime(date[0], '%a, %d %b %Y %H:%M:%S %Z')
-                i = -1
-                while d == temp.day:
-
-                    r_email = messages[i]
-                    # fetch 명령어로 메일 가져오기
-                    res, msg = imap.uid('fetch', r_email, "(RFC822)")
-                    # 사람이 읽을 수 있는 형태로 변환
-                    raw = msg[0][1].decode('utf-8')
-                    #print(raw)
-                    # raw_readable에서 원하는 부분만 파싱하기 위해 email 모듈을 이용해 변환
-                    email_message = email.message_from_string(raw)
-
-                    # 보낸사람
-                    fr = make_header(decode_header(email_message.get('From')))
-                    fr = str(fr)
-                    print(fr)
-
-                    # 메일 제목
-                    subject = make_header(decode_header(email_message.get('Subject')))
-                    subject = str(subject)
-                    print(subject)
-
-                    #메일 시간
-                    date = decode_header(email_message.get("Date"))[0]
-                    #print(date)
-                    try:
-                        temp = datetime.strptime(date[0], '%a, %d %b %Y %H:%M:%S %z')
-                    except:
-                        temp = datetime.strptime(date[0], '%a, %d %b %Y %H:%M:%S %Z')
-                    #print(temp.day)
-            
-                    if d != temp.day:
-                        break
-
-                    # 메일 내용
-                    if email_message.is_multipart():
-                        for part in email_message.walk():
-                            ctype = part.get_content_type()
-                            cdispo = str(part.get('Content-Disposition'))
-                            if ctype == 'text/plain' and 'attachment' not in cdispo:
-                                body = part.get_payload(decode=True)  # decode
-                                break
-                    
-                    else:
-                        body = email_message.get_payload(decode=True)
-                    body = body.decode('utf-8')
-
-                    emaillist = {"title":subject, "sender":fr, "detail":body, "date":temp}
-                    #emaillisttt = json.dumps(emaillist, indent=2, ensure_ascii=False)
-                    emaillists.append(emaillist)
-                    print(emaillists)
-                    i-=1
-
-            elif resg.find('@naver.com') != -1:
-                '''
-                try:
-                    imap = imaplib.IMAP4_SSL('imap.naver.com')
-                    try:
-                        imap.login(resg, asg)
-                    except:
-                        return Response("imap naver information is not matcded")
-                    imap.select("INBOX")
-                    status, messages = imap.uid('search', None, 'ALL')
-
-                    messages = messages[0].split()
-
-                    r_email = messages[-1]
-
-                    res, msg = imap.uid('fetch', r_email, "(RFC822)")
-
-                    raw = msg[0][1].decode('utf-8')
-
-                    email_message = email.message_from_string(raw)
-                    d = datetime.now().day
-                    date = decode_header(email_message.get("Date"))[0]
-                    #print(date)
-                    try:
-                        temp = datetime.strptime(date[0], '%a, %d %b %Y %H:%M:%S %z')
-                    except:
-                        temp = datetime.strptime(date[0], '%a, %d %b %Y %H:%M:%S %Z')
-                    i = -1
-                    while d == temp.day:
-
-                        r_email = messages[i]
-                        # fetch 명령어로 메일 가져오기
-                        res, msg = imap.uid('fetch', r_email, "(RFC822)")
-                        # 사람이 읽을 수 있는 형태로 변환
-                        raw = msg[0][1].decode('utf-8')
-                        #print(raw)
-                        # raw_readable에서 원하는 부분만 파싱하기 위해 email 모듈을 이용해 변환
-                        email_message = email.message_from_string(raw)
-
-                        # 보낸사람
-                        fr = make_header(decode_header(email_message.get('From')))
-                        fr = str(fr)
-                        print(fr)
-
-                        # 메일 제목
-                        subject = make_header(decode_header(email_message.get('Subject')))
-                        subject = str(subject)
-                        print(subject)
-
-                        #메일 시간
-                        date = decode_header(email_message.get("Date"))[0]
-                        #print(date)
-                        try:
-                            temp = datetime.strptime(date[0], '%a, %d %b %Y %H:%M:%S %z')
-                        except:
-                            temp = datetime.strptime(date[0], '%a, %d %b %Y %H:%M:%S %Z')
-                        #print(temp.day)
-            
-                        if d != temp.day:
-                            break
-
-                        # 메일 내용
-                        if email_message.is_multipart():
-                            for part in email_message.walk():
-                                ctype = part.get_content_type()
-                                cdispo = str(part.get('Content-Disposition'))
-                                if ctype == 'text/plain' and 'attachment' not in cdispo:
-                                    body = part.get_payload(decode=True)  # decode
-                                    break
-                                
-                        else:
-                            body = email_message.get_payload(decode=True)
-                        body = body.decode('utf-8')
-
-                        emaillist = {"title":subject, "sender":fr, "detail":body, "date":temp}
-                        #emaillisttt = json.dumps(emaillist, indent=2, ensure_ascii=False)
-                        emaillists.append(emaillist)
-                        print(emaillists)
-                        i-=1
-
-                except:
-                '''
-                imap = imaplib.IMAP4_SSL('imap.naver.com')
-                try:
-                    imap.login(resg, asg)
-                except:
-                    return Response({"imap naver information ":" is not matcded"})
-
-                imap.select('INBOX')
-                resp, data = imap.uid('search', None, 'All')
-                all_email = data[0].split()
-                last_email = all_email[-1]
-                result, data = imap.uid('fetch', last_email, '(RFC822)')
-                raw = data[0][1]
-                email_message = email.message_from_bytes(raw, policy = policy.default)
-                d = datetime.now().day
-                date = email_message['Date']
-                print(d)
-                try:
-                    temp = datetime.strptime(date, '%a, %d %b %Y %H:%M:%S %z')
-                except:
-                    temp = datetime.strptime(date[0], '%a, %d %b %Y %H:%M:%S %Z')
-
-                print(temp.day)
-
-                i=-1
-                while d == temp.day: 
-                    last_email = all_email[i]
-                    result, data = imap.uid('fetch', last_email, '(RFC822)')
-                    raw_email = data[0][1]
-                    email_message = email.message_from_bytes(raw_email, policy = policy.default)
-
-                    #보낸이
-                    sender = email_message['From']
-
-                    # 제목 가져오기
-                    subject, encode = find_encoding_info(email_message['Subject'])
-                    print('SUBJECT : ', subject)
-                    print('+'*70)
-                    #메일의 시간
-                    date = email_message['Date']
-                    try:
-                        temp = datetime.strptime(date, '%a, %d %b %Y %H:%M:%S %z')
-                    except:
-                        temp = datetime.strptime(date[0], '%a, %d %b %Y %H:%M:%S %Z')
-
-                    if d != temp.day:
-                        break
-                        
-                    #본문 내용 출력하기
-                    message = ''
-                    if email_message.is_multipart():
-                        for part in email_message.walk():
-                            ctype = part.get_content_type()
-                            cdispo = str(part.get('Content-Disposition'))
-                            if ctype == 'text/plain' and 'attachment' not in cdispo:
-                                message = part.get_payload(decode=True)  # decode
-                                message = message.decode('utf-8')
-                                break
-                    
-                    else:
-                        message = email_message.get_payload(decode=True)
-                    print(message)
-                    
-
-                    
-                    emaillist = {"title":subject, "sender":sender, "detail":message, "date":temp}
-                    emaillists.append(emaillist)
-
-                    i-=1
-
-                
+            if resg.find("gmail") != -1:
+                res = gmaillists(resg,had)
+            else:
+                res = naverlists(resg,asg,res)
             j+=1
-        imap.close()
-        imap.logout()
-        rat = Folder.objects.filter(user_id=request.user.id)
+        print(res)
         
-        print(type(rat[0].sender))
-
-
-        return Response(emaillists)
+        return Response(res, status=status.HTTP_200_OK)
 
         
 
@@ -383,232 +681,24 @@ class FolderGetList(APIView):
         #rat = Folder.objects.filter(user_id=request.user.id)
 
         rata = Folder.objects.get(pk=pk)
-        print(rata.email_domain)
+        rataq = rata.sender
+        ratap = rata.keyword
         #print(type(rat[pk].sender))
         #print("id is ", rat[pk].id)
-        #rfd = rat[pk].email_domain
-        rfd = rata.email_domain
         
-        emaillist = ""
-        emaillists = []
         j=0
         while j < len(tmp):
             resg = tmp[j].email
             asg = tmp[j].password
             had = tmp[j].g_key
-            if resg.find('@gmail.com') != -1 and rfd.find("gmail") != -1:
-                imap = imaplib.IMAP4_SSL('imap.gmail.com')
+            if resg.find('@gmail.com') != -1:
+                res = foldergmaillists(resg,had,rataq,ratap)
+            else:
                 try:
-                    imap.login(resg, had)
+                    res = foldernaverlists(resg,asg,res,rataq,ratap)
                 except:
-                    return Response({"imap gmail information ":" is not matcded"})
-                imap.select("INBOX")
-                status, messages = imap.uid('search', None, 'ALL')
-
-                messages = messages[0].split()
-
-                r_email = messages[-1]
-
-                res, msg = imap.uid('fetch', r_email, "(RFC822)")
-
-                raw = msg[0][1].decode('utf-8')
-
-                email_message = email.message_from_string(raw)
-                d = datetime.now().day
-                date = decode_header(email_message.get("Date"))[0]
-                #print(date)
-                try:
-                    temp = datetime.strptime(date[0], '%a, %d %b %Y %H:%M:%S %z')
-                except:
-                    temp = datetime.strptime(date[0], '%a, %d %b %Y %H:%M:%S %Z')
-                i = -1
-                while d == temp.day:
-
-                    r_email = messages[i]
-                    # fetch 명령어로 메일 가져오기
-                    res, msg = imap.uid('fetch', r_email, "(RFC822)")
-                    # 사람이 읽을 수 있는 형태로 변환
-                    raw = msg[0][1].decode('utf-8')
-                    #print(raw)
-                    # raw_readable에서 원하는 부분만 파싱하기 위해 email 모듈을 이용해 변환
-                    email_message = email.message_from_string(raw)
-
-                    # 보낸사람
-                    fr = make_header(decode_header(email_message.get('From')))
-                    fr = str(fr)
-
-                    print(fr)
-
-                    # 메일 제목
-                    subject = make_header(decode_header(email_message.get('Subject')))
-                    subject = str(subject)
-                    print(subject)
-
-                    #메일 시간
-                    date = decode_header(email_message.get("Date"))[0]
-                    #print(date)
-                    try:
-                        temp = datetime.strptime(date[0], '%a, %d %b %Y %H:%M:%S %z')
-                    except:
-                        temp = datetime.strptime(date[0], '%a, %d %b %Y %H:%M:%S %Z')
-                    #print(temp.day)
-            
-                    if d != temp.day:
-                        break
-
-                    # 메일 내용
-                    if email_message.is_multipart():
-                        for part in email_message.walk():
-                            ctype = part.get_content_type()
-                            cdispo = str(part.get('Content-Disposition'))
-                            if ctype == 'text/plain' and 'attachment' not in cdispo:
-                                body = part.get_payload(decode=True)  # decode
-                                break
-                    
-                    else:
-                        body = email_message.get_payload(decode=True)
-                    body = body.decode('utf-8')
-
-                    emaillist = {"title":subject, "sender":fr, "detail":body, "date":temp}
-                    folderemaillist = subject + fr + body
-                    #emaillisttt = json.dumps(emaillist, indent=2, ensure_ascii=False)
-                    qqq = rata.sender
-                    ppp = rata.keyword
-                    qqqq = arrayfilter(qqq)
-                    pppp = arrayfilter(ppp)
-                    print("qqqq is ", qqqq)
-                    print("pppp is ", pppp)
-                    right = False
-                    ii = 0
-                    nn = len(qqqq)
-                    
-                    while ii < nn:
-                        if folderemaillist.find(qqqq[ii]) != -1:
-                            right = True
-                            break
-                        ii+=1
-
-                    jj = 0
-                    mm = len(pppp)
-                    while jj < mm:
-                        if folderemaillist.find(pppp[jj]) != -1:
-                            right = True
-                            break
-                        jj+=1
-
-                    if right == False:
-                        i-=1
-                        continue
-
-                    emaillists.append(emaillist)
-                    print(emaillists)
-                    i-=1
-
-            elif resg.find('@naver.com') != -1 and rfd.find("naver") != -1:
-                imap = imaplib.IMAP4_SSL('imap.naver.com')
-                try:
-                    imap.login(resg, asg)
-                except:
-                    return Response({"imap naver information ":" is not matcded"})
-            
-                imap.select('INBOX')
-                resp, data = imap.uid('search', None, 'All')
-                all_email = data[0].split()
-                last_email = all_email[-1]
-                result, data = imap.uid('fetch', last_email, '(RFC822)')
-                raw = data[0][1]
-                email_message = email.message_from_bytes(raw, policy = policy.default)
-                d = datetime.now().day
-                date = email_message['Date']
-                print(d)
-                try:
-                    temp = datetime.strptime(date, '%a, %d %b %Y %H:%M:%S %z')
-                except:
-                    temp = datetime.strptime(date[0], '%a, %d %b %Y %H:%M:%S %Z')
-                print(temp.day)
-                i=-1
-
-                while d == temp.day: 
-                    last_email = all_email[i]
-                    result, data = imap.uid('fetch', last_email, '(RFC822)')
-                    raw_email = data[0][1]
-                    email_message = email.message_from_bytes(raw_email, policy = policy.default)
-                
-                    #보낸이
-                    sender = email_message['From']
-                
-                    # 제목 가져오기
-                    subject, encode = find_encoding_info(email_message['Subject'])
-                    print('SUBJECT : ', subject)
-                    print('+'*70)
-
-                    #메일의 시간
-                    date = email_message['Date']
-                    try:
-                        temp = datetime.strptime(date, '%a, %d %b %Y %H:%M:%S %z')
-                    except:
-                        temp = datetime.strptime(date[0], '%a, %d %b %Y %H:%M:%S %Z')
-
-
-                    if d != temp.day:
-                        break
-    
-                    #본문 내용 출력하기
-                    message = ''
-                    if email_message.is_multipart():
-                        for part in email_message.walk():
-                            ctype = part.get_content_type()
-                            cdispo = str(part.get('Content-Disposition'))
-                            if ctype == 'text/plain' and 'attachment' not in cdispo:
-                                message = part.get_payload(decode=True)  # decode
-                                message = message.decode('utf-8')
-                                break
-                    
-                    else:
-                        message = email_message.get_payload(decode=True)
-                    print(message)
-                    '''
-                    #메일의 시간
-                    date = email_message['Date']
-                    temp = datetime.strptime(date, '%a, %d %b %Y %H:%M:%S %z')
-                    '''
-                    
-                    emaillist = {"title":subject, "sender":sender, "detail":message, "date":temp}
-
-                    folderemaillist = subject + sender + message
-                    qqq = rata.sender
-                    ppp = rata.keyword
-                    qqqq = arrayfilter(qqq)
-                    pppp = arrayfilter(ppp)
-                    print(qqqq)
-                    print(pppp)
-                    right = False
-                    ii = 0
-                    nn = len(qqqq)
-                    while ii < nn:
-                        if folderemaillist.find(qqqq[ii]) != -1:
-                            right = True
-                            break
-                        ii+=1
-
-                    jj = 0
-                    mm = len(pppp)
-                    while jj < mm:
-                        if folderemaillist.find(pppp[jj]) != -1:
-                            right = True
-                            break
-                        jj+=1
-
-                    if right == False:
-                        i-=1
-                        continue
-
-                    emaillists.append(emaillist)
-                    i-=1
-                
+                    res = foldernaverbytes(resg,asg,res,rataq,ratap)
             j+=1
-        imap.close()
-        imap.logout()
 
 
-        return Response(emaillists)
+        return Response(res, status=status.HTTP_200_OK)

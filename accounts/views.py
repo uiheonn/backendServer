@@ -49,7 +49,7 @@ def login(request):
         if not serializer.is_valid(raise_exception=True):
             return Response({"message": "Request Body Error."}, status=status.HTTP_409_CONFLICT)
         if serializer.validated_data['email'] == "None":
-            return Response({'message': 'fail'}, status=status.HTTP_200_OK)
+            return Response({'message': 'fail'}, status=status.HTTP_409_CONFLICT)
         token = serializer.data['token']
         #token = Token.objects.create()
         response = {

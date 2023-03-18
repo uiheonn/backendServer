@@ -13,14 +13,14 @@ class KeywordView(APIView):
         if serializer.is_valid():
             serializer.save(user=request.user)
             serializer.save()
-            return Response(serializer.data)
+            return Response(serializer.data, status=status.HTTP_409_CONFLICT)
         return Response({"message : keyword post fail"}, status=status.HTTP_409_CONFLICT)
     
     def get(self, request):
         tmp = KeywordUser.objects.filter(user_id = request.user.id)
         serializer = KeywordSerializer(tmp, many=True)
 
-        return Response(serializer.data)
+        return Response(serializer.data, status=status.HTTP_200_OK)
     
 
 class DeleteView(APIView):
@@ -28,9 +28,9 @@ class DeleteView(APIView):
         try:
             tmp = KeywordUser.objects.get(pk=pk)
             tmp.delete()
-            return Response({"message : delete success"})
+            return Response({"message : delete success"}, status=status.HTTP_200_OK)
         except:
-            return Response({"message : delete id not found"})
+            return Response({"message : delete id not found"}, status=status.HTTP_409_CONFLICT)
             
         
         
