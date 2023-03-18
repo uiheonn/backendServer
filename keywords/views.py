@@ -13,7 +13,7 @@ class KeywordView(APIView):
         if serializer.is_valid():
             serializer.save(user=request.user)
             serializer.save()
-            return Response(serializer.data, status=status.HTTP_409_CONFLICT)
+            return Response(serializer.data, status=status.HTTP_200_OK)
         return Response({"message : keyword post fail"}, status=status.HTTP_409_CONFLICT)
     
     def get(self, request):
