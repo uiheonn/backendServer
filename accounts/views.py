@@ -17,7 +17,7 @@ from .models import User
 
 @api_view(['POST'])
 @permission_classes([AllowAny])
-@method_decorator(csrf_exempt)
+#@method_decorator(csrf_exempt)
 #@ensure_csrf_cookie
 def createUser(request):
     if request.method == 'POST':
@@ -41,7 +41,7 @@ def createUser(request):
 
 @api_view(['POST'])
 @permission_classes([AllowAny])
-@method_decorator(csrf_exempt)
+#@method_decorator(csrf_exempt)
 #@ensure_csrf_cookie
 def login(request):
     if request.method == 'POST':

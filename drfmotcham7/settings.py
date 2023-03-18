@@ -33,7 +33,7 @@ SECRET_KEY = 'django-insecure-clgd+r!(nh9_mb(j3y-8d!_dvt-qd_!4f=sibiupp#pk+h0$x9
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-
+#회원가입, 로그인 페이지 사용권한 오류
 LOGIN_REQUIRED = False
 LOGIN_URL = 'https://motchamjing4.herokuapp.com/users/registers'
 LOGIN_URL = 'https://motchamjing4.herokuapp.com/users/logins'
