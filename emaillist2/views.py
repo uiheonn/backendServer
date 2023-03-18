@@ -16,6 +16,7 @@ from django.http import JsonResponse
 from django.core import serializers
 from email import policy
 from myfolders.models import Folder
+from email.utils import parsedate_to_datetime
 
 def find_encoding_info(txt):
     info = email.header.decode_header(txt)
@@ -35,14 +36,13 @@ def arrayfilter(txt):
     a.append(txt[j:i])
     return a
 # a = resg, b = asg, c = had
-def gmaillists(a,c):
-    emaillists = []
+def gmaillists(a,c,gmailres):
     if a.find('gmail') != -1:
         imap = imaplib.IMAP4_SSL('imap.gmail.com')
         try:
             imap.login(a, c)
         except:
-            return Response({"imap gmail information":" is not matched"})
+            return False
         imap.select("INBOX")
         status, messages = imap.uid('search', None, 'ALL')
 
@@ -55,6 +55,12 @@ def gmaillists(a,c):
         raw = msg[0][1].decode('utf-8')
 
         email_message = email.message_from_string(raw)
+        d = datetime.now().date()
+        date_string = email_message.get("Date")
+        temp = parsedate_to_datetime(date_string)
+        tempday = temp.date()
+
+        '''
         d = datetime.now().day
         date = decode_header(email_message.get("Date"))[0]
         #print(date)
@@ -62,8 +68,9 @@ def gmaillists(a,c):
             temp = datetime.strptime(date[0], '%a, %d %b %Y %H:%M:%S %z')
         except:
             temp = datetime.strptime(date[0], '%a, %d %b %Y %H:%M:%S %Z')
+        '''
         i = -1
-        while d == temp.day:
+        while d == tempday:
 
             r_email = messages[i]
             # fetch 명령어로 메일 가져오기
@@ -85,13 +92,22 @@ def gmaillists(a,c):
             print(subject)
 
             #메일 시간
+            d = datetime.now().date()
+            date_string = email_message.get("Date")
+            temp = parsedate_to_datetime(date_string)
+            tempday = temp.date()
+
+            '''
+            d = datetime.now().day
             date = decode_header(email_message.get("Date"))[0]
+            #print(date)
             try:
                 temp = datetime.strptime(date[0], '%a, %d %b %Y %H:%M:%S %z')
             except:
                 temp = datetime.strptime(date[0], '%a, %d %b %Y %H:%M:%S %Z')
+            '''
             
-            if d != temp.day:
+            if d != tempday:
                 break
 
             # 메일 내용
@@ -107,10 +123,10 @@ def gmaillists(a,c):
                 body = email_message.get_payload(decode=True)
             body = body.decode('utf-8')
             emaillist = {"title":subject, "sender":fr, "detail":body, "date":temp}
-            emaillists.append(emaillist)
+            gmailres.append(emaillist)
             i-=1    
             
-    return emaillists
+    return gmailres
 
 def naverlists(a,b,naverres):
     if a.find("naver") != -1:
@@ -118,7 +134,7 @@ def naverlists(a,b,naverres):
         try:
             imap.login(a,b)
         except:
-            return Response("imap naver information is not matcded")
+            return False
         imap.select("INBOX")
         status, messages = imap.uid('search', None, 'ALL')
 
@@ -131,6 +147,12 @@ def naverlists(a,b,naverres):
         raw = msg[0][1].decode('utf-8')
 
         email_message = email.message_from_string(raw)
+        d = datetime.now().date()
+        date_string = email_message.get("Date")
+        temp = parsedate_to_datetime(date_string)
+        tempday = temp.date()
+
+        '''
         d = datetime.now().day
         date = decode_header(email_message.get("Date"))[0]
         #print(date)
@@ -138,8 +160,9 @@ def naverlists(a,b,naverres):
             temp = datetime.strptime(date[0], '%a, %d %b %Y %H:%M:%S %z')
         except:
             temp = datetime.strptime(date[0], '%a, %d %b %Y %H:%M:%S %Z')
+        '''
         i = -1
-        while d == temp.day:
+        while d == tempday:
 
             r_email = messages[i]
             # fetch 명령어로 메일 가져오기
@@ -161,33 +184,37 @@ def naverlists(a,b,naverres):
             print(subject)
 
             #메일 시간
+            d = datetime.now().date()
+            date_string = email_message.get("Date")
+            temp = parsedate_to_datetime(date_string)
+            tempday = temp.date()
+
+            '''
+            d = datetime.now().day
             date = decode_header(email_message.get("Date"))[0]
             #print(date)
             try:
                 temp = datetime.strptime(date[0], '%a, %d %b %Y %H:%M:%S %z')
             except:
                 temp = datetime.strptime(date[0], '%a, %d %b %Y %H:%M:%S %Z')
-            #print(temp.day)
+            '''
             
-            if d != temp.day:
+            if d != tempday:
                 break
 
             # 메일 내용
             body = ""
-            try:
-                if email_message.is_multipart():
-                    for part in email_message.walk():
-                        ctype = part.get_content_type()
-                        cdispo = str(part.get('Content-Disposition'))
-                        if ctype == 'text/plain' and 'attachment' not in cdispo:
-                            body = part.get_payload(decode=True)  # decode
-                            break
+            if email_message.is_multipart():
+                for part in email_message.walk():
+                    ctype = part.get_content_type()
+                    cdispo = str(part.get('Content-Disposition'))
+                    if ctype == 'text/plain' and 'attachment' not in cdispo:
+                        body = part.get_payload(decode=True)  # decode
+                        break
                                 
-                else:
-                    body = email_message.get_payload(decode=True)
-                body = body.decode('utf-8')
-            except:
-                body = body
+            else:
+                body = email_message.get_payload(decode=True)
+            body = body.decode('utf-8')
             
             emaillist = {"title":subject, "sender":fr, "detail":body, "date":temp}
             #emaillisttt = json.dumps(emaillist, indent=2, ensure_ascii=False)
@@ -202,7 +229,7 @@ def naverbytes(a,b,naverbyte):
         try:
             imap.login(a,b)
         except:
-            return Response({"imap naver information ":" is not matcded"})
+            return False
         imap.select('INBOX')
         resp, data = imap.uid('search', None, 'All')
         all_email = data[0].split()
@@ -210,18 +237,24 @@ def naverbytes(a,b,naverbyte):
         result, data = imap.uid('fetch', last_email, '(RFC822)')
         raw = data[0][1]
         email_message = email.message_from_bytes(raw, policy = policy.default)
-        d = datetime.now().day
-        date = email_message['Date']
-        print(d)
-        try:
-            temp = datetime.strptime(date, '%a, %d %b %Y %H:%M:%S %z')
-        except:
-            temp = datetime.strptime(date, '%a, %d %b %Y %H:%M:%S %Z')
 
-        print(temp.day)
+        d = datetime.now().date()
+        date_string = email_message.get("Date")
+        temp = parsedate_to_datetime(date_string)
+        tempday = temp.date()
+
+        '''
+        d = datetime.now().day
+        date = decode_header(email_message.get("Date"))[0]
+        #print(date)
+        try:
+            temp = datetime.strptime(date[0], '%a, %d %b %Y %H:%M:%S %z')
+        except:
+            temp = datetime.strptime(date[0], '%a, %d %b %Y %H:%M:%S %Z')
+        '''
 
         i=-1
-        while d == temp.day: 
+        while d == tempday: 
             last_email = all_email[i]
             result, data = imap.uid('fetch', last_email, '(RFC822)')
             raw_email = data[0][1]
@@ -236,15 +269,22 @@ def naverbytes(a,b,naverbyte):
             print('+'*70)
 
             #메일의 시간
-            date = email_message['Date']
-            print(date)
+            d = datetime.now().date()
+            date_string = email_message.get("Date")
+            temp = parsedate_to_datetime(date_string)
+            tempday = temp.date()
+
+            '''
+            d = datetime.now().day
+            date = decode_header(email_message.get("Date"))[0]
+            #print(date)
             try:
-                temp = datetime.strptime(date, '%a, %d %b %Y %H:%M:%S %z')
+                temp = datetime.strptime(date[0], '%a, %d %b %Y %H:%M:%S %z')
             except:
-                temp = datetime.strptime(date, '%a, %d %b %Y %H:%M:%S %Z')
-            print(i, "번 메일의 시간", temp.day)
-            print("현재 날짜 ", d)
-            if d != temp.day:
+                temp = datetime.strptime(date[0], '%a, %d %b %Y %H:%M:%S %Z')
+            '''
+
+            if d != tempday:
                 print("break문 실행")
                 break
             
@@ -274,14 +314,13 @@ def naverbytes(a,b,naverbyte):
 
         return naverbyte
 
-def foldergmaillists(a,c,q,p):
-    emaillists = []
+def foldergmaillists(a,c,gmailres,q,p):
     if a.find('gmail') != -1:
         imap = imaplib.IMAP4_SSL('imap.gmail.com')
         try:
             imap.login(a, c)
         except:
-            return Response({"imap gmail information":" is not matched"})
+            return False
         imap.select("INBOX")
         status, messages = imap.uid('search', None, 'ALL')
 
@@ -294,6 +333,12 @@ def foldergmaillists(a,c,q,p):
         raw = msg[0][1].decode('utf-8')
 
         email_message = email.message_from_string(raw)
+        d = datetime.now().date()
+        date_string = email_message.get("Date")
+        temp = parsedate_to_datetime(date_string)
+        tempday = temp.date()
+
+        '''
         d = datetime.now().day
         date = decode_header(email_message.get("Date"))[0]
         #print(date)
@@ -301,8 +346,10 @@ def foldergmaillists(a,c,q,p):
             temp = datetime.strptime(date[0], '%a, %d %b %Y %H:%M:%S %z')
         except:
             temp = datetime.strptime(date[0], '%a, %d %b %Y %H:%M:%S %Z')
+        '''
+
         i = -1
-        while d == temp.day:
+        while d == tempday:
 
             r_email = messages[i]
             # fetch 명령어로 메일 가져오기
@@ -324,13 +371,22 @@ def foldergmaillists(a,c,q,p):
             print(subject)
 
             #메일 시간
+            d = datetime.now().date()
+            date_string = email_message.get("Date")
+            temp = parsedate_to_datetime(date_string)
+            tempday = temp.date()
+
+            '''
+            d = datetime.now().day
             date = decode_header(email_message.get("Date"))[0]
+            #print(date)
             try:
                 temp = datetime.strptime(date[0], '%a, %d %b %Y %H:%M:%S %z')
             except:
                 temp = datetime.strptime(date[0], '%a, %d %b %Y %H:%M:%S %Z')
+            '''
             
-            if d != temp.day:
+            if d != tempday:
                 break
 
             # 메일 내용
@@ -368,11 +424,11 @@ def foldergmaillists(a,c,q,p):
             if right == False:
                 i-=1
                 continue
-            emaillists.append(emaillist)
+            gmailres.append(emaillist)
 
             i-=1    
             
-    return emaillists
+    return gmailres
 
 def foldernaverlists(a,b,naverres,q,p):
     if a.find('naver') != -1:
@@ -380,7 +436,7 @@ def foldernaverlists(a,b,naverres,q,p):
         try:
             imap.login(a, b)
         except:
-            return Response({"imap naver information":" is not matched"})
+            return False
         imap.select("INBOX")
         status, messages = imap.uid('search', None, 'ALL')
 
@@ -393,6 +449,12 @@ def foldernaverlists(a,b,naverres,q,p):
         raw = msg[0][1].decode('utf-8')
 
         email_message = email.message_from_string(raw)
+        d = datetime.now().date()
+        date_string = email_message.get("Date")
+        temp = parsedate_to_datetime(date_string)
+        tempday = temp.date()
+
+        '''
         d = datetime.now().day
         date = decode_header(email_message.get("Date"))[0]
         #print(date)
@@ -400,8 +462,10 @@ def foldernaverlists(a,b,naverres,q,p):
             temp = datetime.strptime(date[0], '%a, %d %b %Y %H:%M:%S %z')
         except:
             temp = datetime.strptime(date[0], '%a, %d %b %Y %H:%M:%S %Z')
+        '''
+
         i = -1
-        while d == temp.day:
+        while d == tempday:
 
             r_email = messages[i]
             # fetch 명령어로 메일 가져오기
@@ -423,13 +487,22 @@ def foldernaverlists(a,b,naverres,q,p):
             print(subject)
 
             #메일 시간
+            d = datetime.now().date()
+            date_string = email_message.get("Date")
+            temp = parsedate_to_datetime(date_string)
+            tempday = temp.date()
+
+            '''
+            d = datetime.now().day
             date = decode_header(email_message.get("Date"))[0]
+            #print(date)
             try:
                 temp = datetime.strptime(date[0], '%a, %d %b %Y %H:%M:%S %z')
             except:
                 temp = datetime.strptime(date[0], '%a, %d %b %Y %H:%M:%S %Z')
+            '''
             
-            if d != temp.day:
+            if d != tempday:
                 break
 
             # 메일 내용
@@ -479,7 +552,7 @@ def foldernaverbytes(a,b,naverbyte,q,p):
         try:
             imap.login(a,b)
         except:
-            return Response({"imap naver information ":" is not matcded"})
+            return False
         imap.select('INBOX')
         resp, data = imap.uid('search', None, 'All')
         all_email = data[0].split()
@@ -487,18 +560,23 @@ def foldernaverbytes(a,b,naverbyte,q,p):
         result, data = imap.uid('fetch', last_email, '(RFC822)')
         raw = data[0][1]
         email_message = email.message_from_bytes(raw, policy = policy.default)
+        d = datetime.now().date()
+        date_string = email_message.get("Date")
+        temp = parsedate_to_datetime(date_string)
+        tempday = temp.date()
+
+        '''
         d = datetime.now().day
-        date = email_message['Date']
-        print(d)
+        date = decode_header(email_message.get("Date"))[0]
+        #print(date)
         try:
-            temp = datetime.strptime(date, '%a, %d %b %Y %H:%M:%S %z')
+            temp = datetime.strptime(date[0], '%a, %d %b %Y %H:%M:%S %z')
         except:
             temp = datetime.strptime(date[0], '%a, %d %b %Y %H:%M:%S %Z')
-
-        print(temp.day)
+        '''
 
         i=-1
-        while d == temp.day: 
+        while d == tempday: 
             last_email = all_email[i]
             result, data = imap.uid('fetch', last_email, '(RFC822)')
             raw_email = data[0][1]
@@ -512,13 +590,22 @@ def foldernaverbytes(a,b,naverbyte,q,p):
             print('SUBJECT : ', subject)
             print('+'*70)
             #메일의 시간
-            date = email_message['Date']
+            d = datetime.now().date()
+            date_string = email_message.get("Date")
+            temp = parsedate_to_datetime(date_string)
+            tempday = temp.date()
+
+            '''
+            d = datetime.now().day
+            date = decode_header(email_message.get("Date"))[0]
+            #print(date)
             try:
-                temp = datetime.strptime(date, '%a, %d %b %Y %H:%M:%S %z')
+                temp = datetime.strptime(date[0], '%a, %d %b %Y %H:%M:%S %z')
             except:
                 temp = datetime.strptime(date[0], '%a, %d %b %Y %H:%M:%S %Z')
+            '''
 
-            if d != temp.day:
+            if d != tempday:
                 break
                         
             #본문 내용 출력하기
@@ -626,13 +713,17 @@ class ImapGetView(APIView):
         try:
             return Emaillist2User.objects.get(pk=pk)
         except Emaillist2User.DoesNotExist:
-            return Response("message:do not exist id", status=status.HTTP_409_CONFLICT)
+            return Response("message : not exist id", status=status.HTTP_409_CONFLICT)
     
     # Blog의 detail 보기
     def get(self, request, pk, format=None):
         blog = self.get_object(pk)
         serializer = Emaillist2Serializer(blog)
-        return Response(serializer.data)
+        try:
+            if serializer:
+                return Response(serializer.data, status=status.HTTP_200_OK)
+        except:
+            return Response("{request id not existed in database}", status=status.HTTP_409_CONFLICT)
 #Token을 통해 유저 id 뽑아내는 API. 그 id를 통해 g_email, g_password 가져올수있다
 class TokenGetView(APIView):
     def get(self, request, format=None):
@@ -665,9 +756,20 @@ class ImapGetList(APIView):
             asg = tmp[j].password
             had = tmp[j].g_key
             if resg.find("gmail") != -1:
-                res = gmaillists(resg,had)
+                if gmaillists(resg,had,res) == False:
+                    return Response({"gmail information not righted"},status=status.HTTP_409_CONFLICT)
+                res = gmaillists(resg,had,res)
+
             else:
-                res = naverlists(resg,asg,res)
+                #res = naverlists(resg,asg,res)
+                try:
+                    if naverlists(resg,asg,res) == False:
+                        return Response({"imap naver information is not matcded"}, status=status.HTTP_409_CONFLICT)
+                    res = naverlists(resg,asg,res)
+                except:
+                    if naverbytes(resg,asg,res) == False:
+                        return Response({"imap naver information ":" is not matcded"}, status=status.HTTP_409_CONFLICT)
+                    res = naverbytes(resg,asg,res)
             j+=1
         print(res)
         
@@ -685,19 +787,25 @@ class FolderGetList(APIView):
         ratap = rata.keyword
         #print(type(rat[pk].sender))
         #print("id is ", rat[pk].id)
-        
+        res = []
         j=0
         while j < len(tmp):
             resg = tmp[j].email
             asg = tmp[j].password
             had = tmp[j].g_key
             if resg.find('@gmail.com') != -1:
-                res = foldergmaillists(resg,had,rataq,ratap)
+                if foldergmaillists(resg,had,res,rataq,ratap) == False:
+                    return Response({"imap gmail information":" is not matched"}, status=status.HTTP_409_CONFLICT)
+                res = foldergmaillists(resg,had,res,rataq,ratap)
             else:
                 try:
+                    if foldernaverlists(resg,asg,res,rataq,ratap) == False:
+                        return Response({"imap naver information":" is not matched"}, status=status.HTTP_409_CONFLICT)
                     res = foldernaverlists(resg,asg,res,rataq,ratap)
                 except:
-                    res = foldernaverbytes(resg,asg,res,rataq,ratap)
+                    if foldernaverlists(resg,asg,res,rataq,ratap) == False:
+                        return Response({"imap naver information":" is not matched"}, status=status.HTTP_409_CONFLICT)
+                    res = foldernaverlists(resg,asg,res,rataq,ratap)
             j+=1
 
 
