@@ -21,16 +21,20 @@ class FolderView(APIView):
         
     def get(self, request):
         tmp = Folder.objects.filter(user_id = request.user.id)
-        
+    
         serializer = FolderSerializer(tmp, many=True)
         #last = []
         #tete = {"user":request.user.id, "folder_name":"전체"}
         #last.append(tete)
         #last.append(serializer.data)
+        data = serializer.data
 
-        if serializer.data:
-            return Response(serializer.data, status=status.HTTP_200_OK)
+        print(data)
+        if data:
+            return Response(data, status=status.HTTP_200_OK)
         return Response({"no folder"}, status=status.HTTP_409_CONFLICT)
+
+
         '''
         res = []
         i=0

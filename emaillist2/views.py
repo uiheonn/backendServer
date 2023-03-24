@@ -25,10 +25,10 @@ def find_encoding_info(txt):
 
 def arrayfilter(txt):
     a =[]
-    i = 2
-    j = 2
+    i = 0
+    j = 0
     n = len(txt)
-    while i < n-2:
+    while i < n:
         if txt[i] == ",":
             a.append(txt[j:i])
             j = i + 1
@@ -402,31 +402,27 @@ def foldergmaillists(a,c,gmailres,q,p):
                 body = email_message.get_payload(decode=True)
             body = body.decode('utf-8')
             emaillist = {"title":subject, "sender":fr, "detail":body, "date":temp}
-            folderemaillist = subject + fr + body
+            #folderemaillist = subject + fr + body
             right = False
             ii = 0
-            qq = arrayfilter(q)
-            pp = arrayfilter(p)
-            nn = len(qq)
-            while ii < nn:
-                if folderemaillist.find(qq[ii]) != -1:
-                    rigth = True
-                    break
-                ii+=1
             jj = 0
+            qq = arrayfilter(q) # [inu.kr]
+            pp = arrayfilter(p) # [인천대,정의]
+            nn = len(qq)
             mm = len(pp)
-            while jj < mm:
-                if folderemaillist.find(pp[jj]) != -1:
-                    right = True
-                    break
-                jj+=1
-            
-            if right == False:
+            while ii < nn:
+                if fr.find(qq[ii]) != -1:
+                    while jj < mm:
+                        if body.find(pp[jj]) != -1:
+                            right = True
+                            break
+                        jj+=1
+                ii+=1
+            if right==False:
                 i-=1
                 continue
             gmailres.append(emaillist)
-
-            i-=1    
+            i-=1
             
     return gmailres
 
@@ -463,7 +459,6 @@ def foldernaverlists(a,b,naverres,q,p):
         except:
             temp = datetime.strptime(date[0], '%a, %d %b %Y %H:%M:%S %Z')
         '''
-
         i = -1
         while d == tempday:
 
@@ -518,31 +513,27 @@ def foldernaverlists(a,b,naverres,q,p):
                 body = email_message.get_payload(decode=True)
             body = body.decode('utf-8')
             emaillist = {"title":subject, "sender":fr, "detail":body, "date":temp}
-            folderemaillist = subject + fr + body
+            #folderemaillist = subject + fr + body
             right = False
             ii = 0
-            qq = arrayfilter(q)
-            pp = arrayfilter(p)
-            nn = len(qq)
-            while ii < nn:
-                if folderemaillist.find(qq[ii]) != -1:
-                    rigth = True
-                    break
-                ii+=1
             jj = 0
+            qq = arrayfilter(q) # [inu.kr]
+            pp = arrayfilter(p) # [인천대,정의]
+            nn = len(qq)
             mm = len(pp)
-            while jj < mm:
-                if folderemaillist.find(pp[jj]) != -1:
-                    right = True
-                    break
-                jj+=1
-            
-            if right == False:
+            while ii < nn:
+                if fr.find(qq[ii]) != -1:
+                    while jj < mm:
+                        if body.find(pp[jj]) != -1:
+                            right = True
+                            break
+                        jj+=1
+                ii+=1
+            if right==False:
                 i-=1
                 continue
             naverres.append(emaillist)
-
-            i-=1    
+            i-=1
             
     return naverres
 
@@ -626,28 +617,25 @@ def foldernaverbytes(a,b,naverbyte,q,p):
             folderemaillist = subject + sender + message
             right = False
             ii = 0
-            qq = arrayfilter(q)
-            pp = arrayfilter(p)
-            nn = len(qq)
-            while ii < nn:
-                if folderemaillist.find(qq[ii]) != -1:
-                    rigth = True
-                    break
-                ii+=1
             jj = 0
+            qq = arrayfilter(q) # [inu.kr]
+            pp = arrayfilter(p) # [인천대,정의]
+            nn = len(qq)
             mm = len(pp)
-            while jj < mm:
-                if folderemaillist.find(pp[jj]) != -1:
-                    right = True
-                    break
-                jj+=1
-            
-            if right == False:
+            while ii < nn:
+                if sender.find(qq[ii]) != -1:
+                    while jj < mm:
+                        if message.find(pp[jj]) != -1:
+                            right = True
+                            break
+                        jj+=1
+                ii+=1
+            if right==False:
                 i-=1
                 continue
             naverbyte.append(emaillist)
-
             i-=1
+
     return naverbyte
 
 
@@ -798,18 +786,20 @@ class FolderGetList(APIView):
             asg = tmp[j].password
             had = tmp[j].g_key
             if resg.find('@gmail.com') != -1:
-                if foldergmaillists(resg,had,res,rataq,ratap) == False:
-                    return Response({"imap gmail information":" is not matched"}, status=status.HTTP_409_CONFLICT)
                 res = foldergmaillists(resg,had,res,rataq,ratap)
+                if res == False:
+                    return Response({"imap gmail information":" is not matched"}, status=status.HTTP_409_CONFLICT)
             else:
                 try:
-                    if foldernaverlists(resg,asg,res,rataq,ratap) == False:
-                        return Response({"imap naver information":" is not matched"}, status=status.HTTP_409_CONFLICT)
                     res = foldernaverlists(resg,asg,res,rataq,ratap)
+                    if res == False:
+                        return Response({"imap naver information":" is not matched"}, status=status.HTTP_409_CONFLICT)
+                    
                 except:
-                    if foldernaverlists(resg,asg,res,rataq,ratap) == False:
-                        return Response({"imap naver information":" is not matched"}, status=status.HTTP_409_CONFLICT)
                     res = foldernaverlists(resg,asg,res,rataq,ratap)
+                    if res == False:
+                        return Response({"imap naver information":" is not matched"}, status=status.HTTP_409_CONFLICT)
+                    
             j+=1
 
 
