@@ -12,11 +12,19 @@ class FolderView(APIView):
         serializer = FolderSerializer(data=request.data)
         serializer.fields['sender'].required = False
         serializer.fields['keyword'].required = False
+
         
         if serializer.is_valid():
             serializer.save(user=request.user)
             serializer.save()
+            
+            #print(serializer.data['sender'])
             return Response({"message : ok"}, status=status.HTTP_200_OK)
+
+
+
+
+
         return Response({"message : fail"}, status=status.HTTP_409_CONFLICT)
         
     def get(self, request):

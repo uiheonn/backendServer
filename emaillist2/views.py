@@ -25,10 +25,10 @@ def find_encoding_info(txt):
 
 def arrayfilter(txt):
     a =[]
-    i = 0
-    j = 0
+    i = 1
+    j = 1
     n = len(txt)
-    while i < n:
+    while i < n-1:
         if txt[i] == ",":
             a.append(txt[j:i])
             j = i + 1
@@ -406,18 +406,35 @@ def foldergmaillists(a,c,gmailres,q,p):
             right = False
             ii = 0
             jj = 0
-            qq = arrayfilter(q) # [inu.kr]
-            pp = arrayfilter(p) # [인천대,정의]
+            qq = arrayfilter(q) # [inu.kr] 발신인
+            pp = arrayfilter(p) # [인천대,정의] 키워드
             nn = len(qq)
             mm = len(pp)
-            while ii < nn:
-                if fr.find(qq[ii]) != -1:
-                    while jj < mm:
-                        if body.find(pp[jj]) != -1:
-                            right = True
-                            break
-                        jj+=1
-                ii+=1
+
+            if "모든" in qq[ii] and "모든" in pp[ii]:
+                right = True
+
+            elif "모든" in qq[ii]: # 발신인이 모든으로 되어있으니 키워드로만 필터를 한다
+                while jj < mm:
+                    if body.find(pp[jj]) != -1:
+                        right = True
+                        break
+                    jj+=1
+            elif "모든" in pp[ii]:
+                while ii < nn:
+                    if fr.find(qq[ii]) != -1:
+                        right = True
+                        break
+                    ii+=1
+            else:
+                while ii < nn:
+                    if fr.find(qq[ii]) != -1:
+                        while jj < mm:
+                            if body.find(pp[jj]) != -1:
+                                right = True
+                                break
+                            jj+=1
+                    ii+=1
             if right==False:
                 i-=1
                 continue
@@ -521,14 +538,30 @@ def foldernaverlists(a,b,naverres,q,p):
             pp = arrayfilter(p) # [인천대,정의]
             nn = len(qq)
             mm = len(pp)
-            while ii < nn:
-                if fr.find(qq[ii]) != -1:
-                    while jj < mm:
-                        if body.find(pp[jj]) != -1:
-                            right = True
-                            break
-                        jj+=1
-                ii+=1
+            if "모든" in qq[ii] and "모든" in pp[ii]:
+                right = True
+
+            elif "모든" in qq[ii]: # 발신인이 모든으로 되어있으니 키워드로만 필터를 한다
+                while jj < mm:
+                    if body.find(pp[jj]) != -1:
+                        right = True
+                        break
+                    jj+=1
+            elif "모든" in pp[ii]:
+                while ii < nn:
+                    if fr.find(qq[ii]) != -1:
+                        right = True
+                        break
+                    ii+=1
+            else:
+                while ii < nn:
+                    if fr.find(qq[ii]) != -1:
+                        while jj < mm:
+                            if body.find(pp[jj]) != -1:
+                                right = True
+                                break
+                            jj+=1
+                    ii+=1
             if right==False:
                 i-=1
                 continue
@@ -622,14 +655,30 @@ def foldernaverbytes(a,b,naverbyte,q,p):
             pp = arrayfilter(p) # [인천대,정의]
             nn = len(qq)
             mm = len(pp)
-            while ii < nn:
-                if sender.find(qq[ii]) != -1:
-                    while jj < mm:
-                        if message.find(pp[jj]) != -1:
-                            right = True
-                            break
-                        jj+=1
-                ii+=1
+            if "모든" in qq[ii] and "모든" in pp[ii]:
+                right = True
+
+            elif "모든" in qq[ii]: # 발신인이 모든으로 되어있으니 키워드로만 필터를 한다
+                while jj < mm:
+                    if message.find(pp[jj]) != -1:
+                        right = True
+                        break
+                    jj+=1
+            elif "모든" in pp[ii]:
+                while ii < nn:
+                    if sender.find(qq[ii]) != -1:
+                        right = True
+                        break
+                    ii+=1
+            else:
+                while ii < nn:
+                    if sender.find(qq[ii]) != -1:
+                        while jj < mm:
+                            if message.find(pp[jj]) != -1:
+                                right = True
+                                break
+                            jj+=1
+                    ii+=1
             if right==False:
                 i-=1
                 continue
