@@ -54,6 +54,7 @@ class FolderSerializer(serializers.ModelSerializer):
         if not value:
             value = ["모든"]
         return value
+
     def to_representation(self, instance):
         data = super().to_representation(instance)
         res = data['sender']
@@ -61,15 +62,15 @@ class FolderSerializer(serializers.ModelSerializer):
         tmp = data['keyword']
         re_tmp = '{' + ''.join(tmp).replace('{', '').replace('}', '') + '}'
         if '{"' in re_res:
-            resres = arrayfilter2(re_res)
-            tmptmp = arrayfilter2(re_tmp)
-        else:
-            resres = arrayfilter(re_res)
-            tmptmp = arrayfilter(re_tmp)
+            re_res = re_res.replace('"', '')
+        if '{"' in re_tmp:
+            re_tmp = re_tmp.replace('"', '')
+        resres = arrayfilter(re_res)
+        tmptmp = arrayfilter(re_tmp)
 
-        print(resres)
-        print(tmptmp)
+
         data['sender'] = resres
         data['keyword'] = tmptmp
         return data
+
 

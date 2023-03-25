@@ -6,6 +6,8 @@ from .models import Folder
 from rest_framework.views import APIView
 # Create your views here.
 
+
+
 #폴더 정보 등록 api
 class FolderView(APIView):
     def post(self, request):
@@ -13,7 +15,7 @@ class FolderView(APIView):
         serializer.fields['sender'].required = False
         serializer.fields['keyword'].required = False
 
-        
+
         if serializer.is_valid():
             serializer.save(user=request.user)
             serializer.save()
@@ -24,7 +26,7 @@ class FolderView(APIView):
 
 
 
-
+        print(serializer.data)
         return Response({"message : fail"}, status=status.HTTP_409_CONFLICT)
         
     def get(self, request):
