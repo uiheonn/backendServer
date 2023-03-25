@@ -39,7 +39,6 @@ class FolderView(APIView):
         #last.append(serializer.data)
         data = serializer.data
 
-        print(data)
         if data:
             return Response(data, status=status.HTTP_200_OK)
         return Response({"no folder"}, status=status.HTTP_409_CONFLICT)

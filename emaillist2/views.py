@@ -797,20 +797,20 @@ class ImapGetList(APIView):
             asg = tmp[j].password
             had = tmp[j].g_key
             if resg.find("gmail") != -1:
-                if gmaillists(resg,had,res) == False:
-                    return Response({"gmail information not righted"},status=status.HTTP_409_CONFLICT)
                 res = gmaillists(resg,had,res)
+                if res == False:
+                    return Response({"gmail information not righted"},status=status.HTTP_409_CONFLICT)
 
             else:
                 #res = naverlists(resg,asg,res)
                 try:
-                    if naverlists(resg,asg,res) == False:
-                        return Response({"imap naver information is not matcded"}, status=status.HTTP_409_CONFLICT)
                     res = naverlists(resg,asg,res)
+                    if res == False:
+                        return Response({"imap naver information is not matcded"}, status=status.HTTP_409_CONFLICT)
                 except:
-                    if naverbytes(resg,asg,res) == False:
-                        return Response({"imap naver information ":" is not matcded"}, status=status.HTTP_409_CONFLICT)
                     res = naverbytes(resg,asg,res)
+                    if res == False:
+                        return Response({"imap naver information ":" is not matcded"}, status=status.HTTP_409_CONFLICT)
             j+=1
         print(res)
         
