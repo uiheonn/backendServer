@@ -39,11 +39,7 @@ class FolderSerializer(serializers.ModelSerializer):
             'sender',
             'keyword',
         )
-    '''
-    def concatenate_sender(self, sender_list):
-        sender = ''.join(sender_list)
-        return [sender]
-    '''
+
     def validate_sender(self, value):
         if not value:
             # sender 값이 빈 리스트인 경우 "모든"으로 변경
@@ -57,6 +53,8 @@ class FolderSerializer(serializers.ModelSerializer):
 
     def to_representation(self, instance):
         data = super().to_representation(instance)
+
+
         res = data['sender']
         re_res = '{' + ''.join(res).replace('{', '').replace('}', '') + '}'
         tmp = data['keyword']
@@ -72,5 +70,3 @@ class FolderSerializer(serializers.ModelSerializer):
         data['sender'] = resres
         data['keyword'] = tmptmp
         return data
-
-
