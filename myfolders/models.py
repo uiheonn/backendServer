@@ -6,6 +6,7 @@ from django.contrib.postgres.fields import ArrayField
 class Folder(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, null= True)
     folder_name = models.CharField(max_length=100)
+    
     sender = ArrayField(models.CharField(max_length=100), blank=True, null=True)
     #sender = models.ListField(models.CharField(max_length=100))
     #sender = models.CharField(max_length=100)
