@@ -1,7 +1,6 @@
 from django.urls import path, include
 from . import views
 
-
 urlpatterns = [
     path('imaplists2/', views.ImapGetList.as_view()), #메일 리스트
     path('emailauths2/', views.ImapView.as_view()), #메일 인증
