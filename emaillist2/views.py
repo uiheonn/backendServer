@@ -817,7 +817,6 @@ class ImapGetList(APIView):
         return Response(res, status=status.HTTP_200_OK)
 
         
-
 class FolderGetList(APIView):
     def get(self, request, pk, format=None):
         tmp = Emaillist2User.objects.filter(user_id=request.user.id)
