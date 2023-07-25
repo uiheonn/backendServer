@@ -11,7 +11,5 @@ class FilterViewSet(viewsets.ModelViewSet):
     serializer_class = FilterSerializer
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
 
-
-
     def perform_create(self, serializer):
         serializer.save(author=self.request.user)
