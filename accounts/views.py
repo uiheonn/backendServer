@@ -15,7 +15,6 @@ from .models import User
 #from django.shortcuts import render
 from rest_framework.permissions import AllowAny
 
-
 class registerView(APIView):
     def post(self, request):
         permission_classes = [AllowAny]
