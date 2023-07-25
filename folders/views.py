@@ -4,7 +4,6 @@ from rest_framework.response import Response
 from .serializers import Folder2Serializer
 from .models import Folder2
 from rest_framework.views import APIView
-# Create your views here.
 
 #폴더 정보 등록 api
 class FolderView(APIView):
