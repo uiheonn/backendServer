@@ -22,7 +22,6 @@ class KeywordView(APIView):
         
         return Response(serializer.data, status=status.HTTP_200_OK)
     
-
 class DeleteView(APIView):
     def delete(self, request, pk, format=None):
         try:
