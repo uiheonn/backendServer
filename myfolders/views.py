@@ -55,7 +55,6 @@ class FolderView(APIView):
         '''
 
 
-
 class CusFolderView(APIView):
     def get(self, request, pk):
         tmp = Folder.objects.filter(user_id=request.user.id)
